@@ -1,30 +1,28 @@
 install:
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 
 validate:
-	python scripts/validate_setup.py
+	python3 scripts/validate_setup.py
 
 download-dataset:
-	python scripts/download_klifs_dataset.py
+	python3 scripts/download_klifs_dataset.py
 
 explore-dataset:
-	python scripts/explore_dataset.py
-
-train:
-	python training/finetune.py
-
-evaluate:
-	python evaluation/evaluate.py
-
-visualize:
-	python evaluation/visualize.py
+	python3 scripts/explore_dataset.py
 
 preprocess:
-	python scripts/preprocess_dataset.py
+	python3 scripts/preprocess_dataset.py
+
+train:
+	python3 training/finetune.py
+
+evaluate:
+	python3 evaluation/evaluate.py
+
+visualize:
+	python3 evaluation/visualize.py
 
 # Pipeline completo
 pipeline: validate download-dataset explore-dataset preprocess
 
-.PHONY: install validate download-dataset explore-dataset train evaluate visualize preprocess pipeline
-
-
+.PHONY: install validate download-dataset explore-dataset preprocess train evaluate visualize pipeline

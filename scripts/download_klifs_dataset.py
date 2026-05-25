@@ -17,7 +17,7 @@ import json
 import csv
 import time
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Any, List, Dict, Optional
 from collections import defaultdict
 import logging
 
@@ -59,162 +59,234 @@ CANCER_KINASES = {
     'PIK3CA': 'phosphoinositide 3-kinase',
 }
 
+class KlifsAPIError(Exception):
+    """Error de acceso a la API de KLIFS."""
+
+
+class KlifsClient:
+    """Cliente para la API de KLIFS, basado en Swagger oficial."""
+
+    BASE_URL = "https://klifs.net/api"
+    DEFAULT_HEADERS = {
+        'User-Agent': 'Protein-ML-Pipeline/1.0',
+        'Accept': 'application/json',
+    }
+
+    def __init__(self, max_retries: int = 3, retry_delay: float = 1.0, timeout: float = 30.0):
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
+        self.timeout = timeout
+        self.session = requests.Session()
+        self.session.headers.update(self.DEFAULT_HEADERS)
+
+    def _parse_retry_after(self, value: Optional[str]) -> Optional[float]:
+        if not value:
+            return None
+        try:
+            return float(value)
+        except ValueError:
+            return None
+
+    def _request(self, endpoint: str, params: Optional[Dict[str, Any]] = None, stream: bool = False, accept: Optional[str] = None) -> requests.Response:
+        url = f"{self.BASE_URL.rstrip('/')}/{endpoint.lstrip('/')}"
+        attempt = 0
+        delay = self.retry_delay
+
+        if accept:
+            self.session.headers['Accept'] = accept
+        else:
+            self.session.headers['Accept'] = self.DEFAULT_HEADERS['Accept']
+
+        while attempt < self.max_retries:
+            try:
+                logger.debug("KLIFS request %s params=%s attempt=%d", url, params, attempt + 1)
+                response = self.session.get(url, params=params, timeout=self.timeout, stream=stream)
+
+                logger.info("KLIFS HTTP %s %s -> %d", response.request.method, response.url, response.status_code)
+
+                if response.status_code == 429:
+                    retry_after = self._parse_retry_after(response.headers.get('Retry-After'))
+                    wait = retry_after if retry_after is not None else delay
+                    logger.warning("Rate limit alcanzado en KLIFS. Reintentando en %.1fs", wait)
+                    time.sleep(wait)
+                    attempt += 1
+                    delay *= 2
+                    continue
+
+                if 400 <= response.status_code < 600:
+                    if attempt < self.max_retries - 1 and response.status_code in {500, 502, 503, 504}:
+                        logger.warning("KLIFS servidor error %d. Reintentando en %.1fs", response.status_code, delay)
+                        time.sleep(delay)
+                        attempt += 1
+                        delay *= 2
+                        continue
+
+                    message = f"KLIFS API error {response.status_code}: {response.text}"
+                    logger.error(message)
+                    response.raise_for_status()
+
+                return response
+
+            except requests.RequestException as exc:
+                if attempt < self.max_retries - 1:
+                    logger.warning("KLIFS request falló: %s. Reintentando en %.1fs", exc, delay)
+                    time.sleep(delay)
+                    attempt += 1
+                    delay *= 2
+                else:
+                    logger.error("KLIFS request falló después de %d intentos: %s", self.max_retries, exc)
+                    raise KlifsAPIError(str(exc)) from exc
+
+        raise KlifsAPIError(f"No se pudo completar la petición a KLIFS: {endpoint}")
+
+    def get_kinase_names(self, species: str = "HUMAN") -> List[Dict[str, Any]]:
+        return self._request("kinase_names", params={"species": species}).json()
+
+    def get_kinase_information(self, kinase_ids: List[int], species: Optional[str] = None) -> List[Dict[str, Any]]:
+        if not kinase_ids:
+            return []
+        params: Dict[str, Any] = {"kinase_ID": ",".join(map(str, kinase_ids))}
+        if species:
+            params["species"] = species
+        return self._request("kinase_information", params=params).json()
+
+    def get_structures(self, kinase_ids: List[int]) -> List[Dict[str, Any]]:
+        if not kinase_ids:
+            return []
+        return self._request("structures_list", params={"kinase_ID": ",".join(map(str, kinase_ids))}).json()
+
+    def get_structure_pdb(self, structure_id: int, complex_structure: bool = True) -> bytes:
+        endpoint = "structure_get_pdb_complex" if complex_structure else "structure_get_protein"
+        response = self._request(endpoint, params={"structure_ID": structure_id}, stream=True, accept="chemical/x-pdb")
+        return response.content
+
+
 class KLIFSDownloader:
     """Descarga y procesa estructuras desde KLIFS API."""
-
-    BASE_URL = "https://klifs.net"
-    SWAGGER_URL = "https://klifs.net/swagger/swagger.json"
 
     def __init__(
         self,
         output_dir: Path = Path("data/raw/pdbs"),
         metadata_dir: Path = Path("data/metadata"),
         max_retries: int = 3,
-        retry_delay: float = 1.0
+        retry_delay: float = 1.0,
+        timeout: float = 30.0
     ):
         self.output_dir = Path(output_dir)
         self.metadata_dir = Path(metadata_dir)
-        self.max_retries = max_retries
-        self.retry_delay = retry_delay
-
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.metadata_dir.mkdir(parents=True, exist_ok=True)
 
-        self.session = requests.Session()
-        self.session.headers.update({'User-Agent': 'Protein-ML-Pipeline/1.0'})
+        self.client = KlifsClient(max_retries=max_retries, retry_delay=retry_delay, timeout=timeout)
 
-    def _request_with_retry(self, url: str, **kwargs) -> Optional[requests.Response]:
-        """Realiza request con reintentos automáticos."""
-        for attempt in range(self.max_retries):
-            try:
-                response = self.session.get(url, timeout=30, **kwargs)
-                response.raise_for_status()
-                return response
-            except requests.exceptions.RequestException as e:
-                if attempt < self.max_retries - 1:
-                    wait = self.retry_delay * (2 ** attempt)
-                    logger.warning(f"Reintentando en {wait}s. Error: {e}")
-                    time.sleep(wait)
-                else:
-                    logger.error(f"Falló después de {self.max_retries} intentos: {e}")
-                    return None
+    def get_kinases(self) -> List[Dict[str, Any]]:
+        """Obtiene lista de kinasas humanas desde KLIFS usando endpoints oficiales."""
+        logger.info("Obteniendo lista de kinasas humanas desde KLIFS...")
 
-    def get_kinases(self) -> List[Dict]:
-        """Obtiene lista de kinasas desde KLIFS."""
-        logger.info("Obteniendo lista de kinasas...")
+        kinase_names = self.client.get_kinase_names(species="HUMAN")
+        kinases: List[Dict[str, Any]] = []
 
-        url = f"{self.BASE_URL}/api/kinases"
-        response = self._request_with_retry(url)
+        for item in kinase_names:
+            kinases.append({
+                "kinase_id": item.get("kinase_ID"),
+                "gene_name": item.get("name", ""),
+                "full_name": item.get("full_name", ""),
+                "species": item.get("species", ""),
+            })
 
-        if not response:
-            raise RuntimeError("No se pudo descargar lista de kinasas")
-
-        kinases = response.json()
-        logger.info(f"Total kinasas en KLIFS: {len(kinases)}")
-
+        logger.info("Total kinasas humanas en KLIFS: %d", len(kinases))
         return kinases
 
-    def filter_cancer_kinases(self, kinases: List[Dict]) -> List[Dict]:
-        """Filtra solo kinasas humanas relacionadas con cáncer."""
+    def filter_cancer_kinases(self, kinases: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Filtra kinasas humanas relacionadas con cáncer y enriquece metadata."""
+
         filtered = []
 
         for k in kinases:
-            # Extraer nombre de la kinasa (remover _XXX después del nombre)
-            kinase_name = k.get('gene_name', '').upper().split('_')[0]
-            species = k.get('species', '').lower()
+            gene_name = (k.get("gene_name") or "").upper().strip()
+            species = (k.get("species") or "").lower().strip()
 
-            if kinase_name in CANCER_KINASES and 'homo sapiens' in species:
+            if gene_name in CANCER_KINASES and species == "human":
                 filtered.append(k)
 
-        logger.info(f"Kinasas humanas relacionadas con cáncer encontradas: {len(filtered)}")
+        logger.info("Kinasas humanas relacionadas con cáncer encontradas: %d", len(filtered))
+
+        if filtered:
+            kinase_ids = [k["kinase_id"] for k in filtered if k.get("kinase_id") is not None]
+
+            info = self.client.get_kinase_information(kinase_ids, species="HUMAN")
+            info_by_id = {item["kinase_ID"]: item for item in info}
+
+            for k in filtered:
+                details = info_by_id.get(k["kinase_id"], {})
+                k["kinase_family"] = details.get("family", "")
+                k["kinase_group"] = details.get("group", "")
+                k["uniprot"] = details.get("uniprot", "")
+
         return filtered
 
-    def get_structures_for_kinase(self, kinase_id: int) -> List[Dict]:
-        """Obtiene estructuras disponibles para una kinasa."""
-        url = f"{self.BASE_URL}/api/kinase_structures"
-        params = {"kinase_id": kinase_id}
+    def get_structures_for_kinase(self, kinase_id: int) -> List[Dict[str, Any]]:
+        """Obtiene estructuras disponibles para una kinasa usando KLIFS structures_list."""
+        logger.info("Obteniendo estructuras para kinase_id=%s", kinase_id)
+        return self.client.get_structures([kinase_id])
 
-        response = self._request_with_retry(url, params=params)
+    def classify_conformation(self, structure: Dict[str, Any]) -> str:
+        """Clasifica estructura como activa o inactiva usando DFG y alphaC."""
+        dfg_state = str(structure.get("DFG", "")).lower()
+        alphac_state = str(structure.get("aC_helix", "")).lower()
 
-        if not response:
-            return []
+        if "out" in dfg_state:
+            return "inactive"
+        if "out" in alphac_state or "inactive" in alphac_state:
+            return "inactive"
+        if "in" in dfg_state and "in" in alphac_state:
+            return "active"
+        return "active" if "in" in dfg_state else "inactive"
 
-        return response.json()
-
-    def classify_conformation(self, structure: Dict) -> str:
-        """
-        Clasifica estructura como ACTIVA o INACTIVA.
-
-        Lógica:
-        - ACTIVA: DFG-in + alphaC helix presente
-        - INACTIVA: DFG-out o alphaC replegada
-        """
-        dfg_state = structure.get('dfg_state', '').lower()
-        alphac_state = structure.get('alphac_state', '').lower()
-
-        # Si DFG está "out", es muy probable que sea inactiva
-        if 'out' in dfg_state:
-            return 'inactive'
-
-        # Si alphaC está replegada, también es inactiva
-        if 'out' in alphac_state or 'inactive' in alphac_state:
-            return 'inactive'
-
-        # Si DFG está "in" y alphaC está bien posicionada, es activa
-        if 'in' in dfg_state and 'in' in alphac_state:
-            return 'active'
-
-        # Por defecto, usar DFG como indicador principal
-        return 'active' if 'in' in dfg_state else 'inactive'
-
-    def download_pdb(self, pdb_id: str) -> Optional[str]:
-        """Descarga estructura PDB y retorna ruta."""
+    def download_pdb(self, structure_id: int, pdb_id: str) -> Optional[str]:
+        """Descarga una estructura PDB usando el endpoint oficial de KLIFS."""
         try:
-            url = f"{self.BASE_URL}/api/download_pdb?pdb_id={pdb_id}"
-            response = self._request_with_retry(url)
-
-            if not response:
+            pdb_bytes = self.client.get_structure_pdb(structure_id)
+            if not pdb_bytes:
                 return None
 
             pdb_path = self.output_dir / f"{pdb_id.lower()}.pdb"
-
-            with open(pdb_path, 'wb') as f:
-                f.write(response.content)
-
+            with open(pdb_path, "wb") as f:
+                f.write(pdb_bytes)
             return str(pdb_path)
 
         except Exception as e:
-            logger.error(f"Error descargando {pdb_id}: {e}")
+            logger.error("Error descargando structure_id=%s pdb_id=%s: %s", structure_id, pdb_id, e)
             return None
 
     def build_metadata_dataframe(
         self,
-        kinases: List[Dict],
-        structures: List[Dict]
+        kinases: List[Dict[str, Any]],
+        structures: List[Dict[str, Any]]
     ) -> pd.DataFrame:
-        """Construye DataFrame con metadata completa."""
+        """Construye DataFrame con metadata completa y nombres compatibles."""
         rows = []
 
-        for structure in structures:
-            # Buscar información de kinasa
-            kinase_info = next(
-                (k for k in kinases if k['kinase_id'] == structure.get('kinase_id')),
-                {}
-            )
+        kinase_by_id = {k["kinase_id"]: k for k in kinases}
 
+        for structure in structures:
+            kinase_info = kinase_by_id.get(structure.get("kinase_ID"), {})
             conformation = self.classify_conformation(structure)
+            ligand_present = bool(structure.get("ligand") or structure.get("allosteric_ligand"))
 
             row = {
-                'pdb_id': structure.get('pdb_id', ''),
-                'kinase_name': kinase_info.get('gene_name', ''),
-                'kinase_family': kinase_info.get('kinase_family', ''),
-                'species': kinase_info.get('species', ''),
-                'conformational_state': conformation,
-                'dfg_state': structure.get('dfg_state', ''),
-                'alphac_state': structure.get('alphac_state', ''),
-                'ligand_present': structure.get('ligand_present', 0),
-                'resolution': structure.get('resolution', None),
-                'filepath': None,  # Se actualiza después de descargar
+                "structure_id": structure.get("structure_ID"),
+                "pdb_id": structure.get("pdb", ""),
+                "kinase_name": kinase_info.get("gene_name", ""),
+                "kinase_family": kinase_info.get("kinase_family", ""),
+                "kinase_group": kinase_info.get("kinase_group", ""),
+                "species": kinase_info.get("species", ""),
+                "conformational_state": conformation,
+                "dfg_state": structure.get("DFG", ""),
+                "alphac_state": structure.get("aC_helix", ""),
+                "ligand_present": int(ligand_present),
+                "resolution": structure.get("resolution", None),
+                "filepath": None,
             }
             rows.append(row)
 
@@ -222,42 +294,38 @@ class KLIFSDownloader:
 
     def download_all(self) -> pd.DataFrame:
         """Descarga todas las estructuras y construye dataset."""
-        # Obtener kinasas
         all_kinases = self.get_kinases()
+        print(all_kinases[:5])
         cancer_kinases = self.filter_cancer_kinases(all_kinases)
 
         if not cancer_kinases:
             raise RuntimeError("No se encontraron kinasas relacionadas con cáncer")
 
-        logger.info(f"Procesando {len(cancer_kinases)} kinasas...")
+        logger.info("Procesando %d kinasas...", len(cancer_kinases))
 
-        # Obtener estructuras
-        all_structures = []
+        all_structures: List[Dict[str, Any]] = []
         for kinase in tqdm(cancer_kinases, desc="Obteniendo estructuras"):
-            structures = self.get_structures_for_kinase(kinase['kinase_id'])
-            all_structures.extend(structures)
+            structures = self.get_structures_for_kinase(kinase["kinase_id"])
+            if structures:
+                all_structures.extend(structures)
 
-        logger.info(f"Total estructuras encontradas: {len(all_structures)}")
+        logger.info("Total estructuras encontradas: %d", len(all_structures))
 
-        # Construir metadata
         metadata_df = self.build_metadata_dataframe(cancer_kinases, all_structures)
 
-        # Descargar PDBs
         logger.info("Descargando archivos PDB...")
         filepaths = []
-
-        for idx, row in tqdm(metadata_df.iterrows(), total=len(metadata_df)):
-            pdb_id = row['pdb_id']
-            filepath = self.download_pdb(pdb_id)
+        for _, row in tqdm(metadata_df.iterrows(), total=len(metadata_df)):
+            filepath = self.download_pdb(row["structure_id"], row["pdb_id"])
             filepaths.append(filepath)
-            time.sleep(0.1)  # Rate limiting
+            time.sleep(0.1)
 
-        metadata_df['filepath'] = filepaths
-        metadata_df = metadata_df[metadata_df['filepath'].notna()]
+        metadata_df["filepath"] = filepaths
+        metadata_df = metadata_df[metadata_df["filepath"].notna()]
 
-        logger.info(f"Descargadas {len(metadata_df)} estructuras exitosamente")
-
+        logger.info("Descargadas %d estructuras exitosamente", len(metadata_df))
         return metadata_df
+
 
     def save_metadata(self, df: pd.DataFrame, filename: str = "kinase_labels.csv"):
         """Guarda metadata en CSV."""
