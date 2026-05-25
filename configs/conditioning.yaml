@@ -1,0 +1,6 @@
+conditioning:
+  type: label
+  labels:
+    - inactive
+    - active
+  embedding_dim: 32

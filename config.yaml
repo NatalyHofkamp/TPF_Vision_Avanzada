@@ -1,0 +1,153 @@
+# Configuración del Pipeline KLIFS
+# Edita este archivo para customizar el comportamiento
+
+# ============================================================================
+# KINASAS A DESCARGAR
+# ============================================================================
+# Las kinasas humanas relacionadas con cáncer se filtran automáticamente.
+# Este listado especifica cuáles descargar.
+
+kinases:
+  # Receptor de factor de crecimiento epidérmico - mutado en muchos cánceres
+  - name: "EGFR"
+    type: "tyrosine kinase"
+    relevance: "high"
+
+  # Proteína serina/treonina - mutada en melanoma
+  - name: "BRAF"
+    type: "serine/threonine kinase"
+    relevance: "high"
+
+  # Proteína de fusión BCR-ABL - causa leucemia
+  - name: "ABL1"
+    type: "tyrosine kinase"
+    relevance: "high"
+
+  # Receptor de factor de células madre
+  - name: "KIT"
+    type: "tyrosine kinase"
+    relevance: "high"
+
+  # Receptor de factor de crecimiento derivado de plaquetas
+  - name: "PDGFRA"
+    type: "tyrosine kinase"
+    relevance: "high"
+
+  # Receptor de factor de crecimiento fibroblástico
+  - name: "FGFR1"
+    type: "tyrosine kinase"
+    relevance: "medium"
+
+# ============================================================================
+# DIRECTORIOS
+# ============================================================================
+directories:
+  raw_pdbs: "data/raw/pdbs"
+  metadata: "data/metadata"
+  splits: "data/splits"
+  processed: "data/processed"
+  figures: "figures"
+
+# ============================================================================
+# DESCARGA (KLIFS API)
+# ============================================================================
+download:
+  # Número de reintentos en caso de error
+  max_retries: 3
+  # Tiempo entre reintentos (segundos)
+  retry_delay: 1.0
+  # Timeout para requests (segundos)
+  timeout: 30
+  # Delay entre descargas (segundos) - para rate limiting
+  rate_limit_delay: 0.1
+
+# ============================================================================
+# CLASIFICACIÓN DE CONFORMACIONES
+# ============================================================================
+# Define cómo clasificar estructuras como ACTIVAS o INACTIVAS
+
+conformations:
+  # DFG-state: posición de la región aspartico-fenilalanina-glicina
+  # - "DFG-in": región dentro del sitio activo (ACTIVA)
+  # - "DFG-out": región fuera del sitio activo (INACTIVA)
+  dfg:
+    active: ["DFG-in"]
+    inactive: ["DFG-out"]
+
+  # alphaC-state: posición de la hélice alfa-C
+  # - "in": bien posicionada (ACTIVA)
+  # - "out": replegada (INACTIVA)
+  alphac:
+    active: ["in", "alphaC-in"]
+    inactive: ["out", "alphaC-out", "inactive"]
+
+# ============================================================================
+# SPLITS (TRAIN/VAL/TEST)
+# ============================================================================
+# Cómo dividir el dataset para entrenamiento
+
+splits:
+  # Proporción para entrenamiento (0.0-1.0)
+  train: 0.70
+  # Proporción para validación
+  validation: 0.15
+  # Proporción para testing
+  test: 0.15
+  # Seed para reproducibilidad
+  random_state: 42
+  # Si usar estratificación para balance de clases
+  stratified: true
+
+# ============================================================================
+# PREPROCESAMIENTO
+# ============================================================================
+# Configuración para convertir PDB a tensores
+
+preprocessing:
+  # Extraer solo átomos Cα (carbono alfa)
+  extract_ca_only: true
+  # Incluir matriz de distancias
+  compute_distance_matrix: true
+  # Batch size para procesamiento
+  batch_size: 32
+  # Guardar tensores procesados
+  save_tensors: true
+  # Formato de salida para tensores
+  tensor_format: "pt"  # PyTorch format
+
+# ============================================================================
+# EXPLORACIÓN
+# ============================================================================
+# Configuración para análisis de dataset
+
+exploration:
+  # Generar gráficos
+  generate_plots: true
+  # Directorio para gráficos
+  plots_output_dir: "figures"
+  # DPI para figuras
+  figure_dpi: 300
+
+# ============================================================================
+# LOGGING
+# ============================================================================
+logging:
+  # Nivel de logging
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  # Formato de logs
+  format: "%(asctime)s - %(levelname)s - %(message)s"
+  # Guardar logs en archivo
+  save_to_file: false
+  # Archivo de logs
+  log_file: "logs/pipeline.log"
+
+# ============================================================================
+# VALIDACIONES
+# ============================================================================
+validation:
+  # Validar archivos PDB después de descargar
+  validate_pdb: true
+  # Mínima resolución aceptable (Angstroms)
+  min_resolution: 0.5
+  # Máxima resolución aceptable (Angstroms)
+  max_resolution: 4.0

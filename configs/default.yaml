@@ -1,0 +1,16 @@
+experiment:
+  name: kinase_conditioning
+
+training:
+  batch_size: 4
+  epochs: 10
+  learning_rate: 1e-4
+
+conditioning:
+  enabled: true
+  num_classes: 2
+
+paths:
+  raw_data: data/raw
+  processed_data: data/processed
+  checkpoints: outputs/checkpoints
