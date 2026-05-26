@@ -6,11 +6,27 @@ Este script:
 2. Extrae coordenadas atómicas
 3. Genera tensores para entrenamiento
 4. Guarda datos procesados
+
+IMPORTANTE: Splits por grupos
+================================
+Los nuevos splits (train.csv, val.csv, test.csv) usan estrategia GROUPED:
+- Agrupa estructuras de la MISMA kinasa en un único split
+- EVITA leakage: el modelo no ve la misma proteína en train y test
+- Mejor generalización a kinasas completamente nuevas
+
+Workflow:
+1. download_klifs_dataset.py → genera data/metadata/kinase_labels.csv
+2. download_klifs_dataset.py → genera data/splits/{train,val,test}.csv (GROUPED)
+3. preprocess_dataset.py (este script) → genera tensores para TODAS las estructuras
+4. training/finetune.py → FILTRA tensores usando los splits CSVs
+
+Los splits CSVs se GENERAN ANTES del preprocesamiento y se USAN DESPUÉS.
+No los elimines: contienen el mapeo de qué estructuras van a dónde.
 """
 
 import logging
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict
 
 import numpy as np
 import pandas as pd
@@ -154,6 +170,7 @@ class ProteinPreprocessor:
 
         if save_tensors:
             self._save_tensors(all_items)
+            self._validate_preprocessing()
 
         return all_items
 
@@ -178,6 +195,59 @@ class ProteinPreprocessor:
             torch.save(metadata, tensor_dir / 'metadata.pt')
 
         logger.info(f"Tensores guardados en {self.output_dir}")
+
+    def _validate_preprocessing(self):
+        """
+        Valida que los tensores preprocesados sean consistentes con metadata.
+        """
+        logger.info("\n" + "="*80)
+        logger.info("VALIDACIÓN DE PREPROCESAMIENTO")
+        logger.info("="*80)
+        
+        # Verificar que existen los splits CSVs
+        splits_dir = Path("data/splits")
+        if not splits_dir.exists():
+            logger.warning("⚠️  No se encontraron splits en data/splits/")
+            logger.warning("   Ejecute download_klifs_dataset.py primero")
+            return
+        
+        # Cargar splits
+        splits_info = {}
+        for split_name in ['train', 'val', 'test']:
+            split_path = splits_dir / f'{split_name}.csv'
+            if split_path.exists():
+                split_df = pd.read_csv(split_path)
+                splits_info[split_name] = split_df
+                logger.info(f"\n✅ Encontrado {split_name}.csv: {len(split_df)} estructuras")
+                
+                # Verificar que PDB IDs del split tienen tensores
+                tensor_dir = self.output_dir
+                missing_tensors = []
+                for pdb_id in split_df['pdb_id']:
+                    if not (tensor_dir / pdb_id).exists():
+                        missing_tensors.append(pdb_id)
+                
+                if missing_tensors:
+                    logger.warning(f"   ⚠️  Faltan tensores para {len(missing_tensors)} PDBs")
+                else:
+                    logger.info(f"   ✓ Todos los tensores disponibles")
+            else:
+                logger.warning(f"   ⚠️  No encontrado {split_name}.csv")
+        
+        # Información general
+        logger.info(f"\n📊 RESUMEN GENERAL")
+        logger.info(f"   Metadata: {len(self.df)} estructuras")
+        logger.info(f"   Directorio de tensores: {self.output_dir}")
+        
+        if splits_info:
+            total_in_splits = sum(len(df) for df in splits_info.values())
+            logger.info(f"   Estructuras en splits: {total_in_splits}")
+            if total_in_splits == len(self.df):
+                logger.info(f"   ✓ Cobertura completa: 100%")
+            else:
+                logger.info(f"   ⚠️  Cobertura: {total_in_splits}/{len(self.df)} ({total_in_splits/len(self.df)*100:.1f}%)")
+        
+        logger.info("="*80 + "\n")
 
     def create_training_dataloader(self, batch_size: int = 32):
         """Crea dataloader para entrenamiento."""
@@ -212,6 +282,13 @@ class ProteinPreprocessor:
 def main():
     """Ejecuta preprocesamiento del dataset."""
     try:
+        logger.info("="*80)
+        logger.info("PREPROCESAMIENTO DE DATASET")
+        logger.info("="*80)
+        logger.info("\nNOTA: Este script procesa TODAS las estructuras.")
+        logger.info("Los splits (train/val/test) se GENERARON en el paso anterior.")
+        logger.info("Los splits CSVs se USARÁN en el entrenamiento para filtrar datos.\n")
+        
         preprocessor = ProteinPreprocessor()
         items = preprocessor.run(save_tensors=True)
 

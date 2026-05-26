@@ -84,7 +84,18 @@ conformations:
 # ============================================================================
 # SPLITS (TRAIN/VAL/TEST)
 # ============================================================================
-# Cómo dividir el dataset para entrenamiento
+# Estrategia de splitting:
+#
+# GROUPED: Agrupa estructuras de la MISMA kinasa en un único split.
+#   - Evita data leakage estructural (no mezcla kinasas entre train/test)
+#   - Simula generalización a kinasas no vistas
+#   - Mantiene balance ACTIVE/INACTIVE por grupo
+#   - Mejor para biología estructural: aprende principios generales, no memorización
+#
+# ESTRATIFICADO (legacy): Divide aleatoriamente manteniendo balance de clases
+#   - Puede mezclar kinasas entre splits (RIESGO de leakage)
+#   - Mejor performance de validación pero overoptimistic
+#   - Obsoleto: NO RECOMENDADO para datos biológicos
 
 splits:
   # Proporción para entrenamiento (0.0-1.0)
@@ -95,8 +106,25 @@ splits:
   test: 0.15
   # Seed para reproducibilidad
   random_state: 42
-  # Si usar estratificación para balance de clases
-  stratified: true
+  
+  # ================================================================
+  # NUEVA ESTRATEGIA: GROUPED BY KINASE
+  # ================================================================
+  # Estrategia de splitting: "grouped" o "stratified"
+  strategy: "grouped"
+  
+  # Agrupar por esta columna (cada grupo = una kinasa completa)
+  group_by: "kinase_name"
+  
+  # Prioritize: evita leakage antes que balance perfecto
+  # Con ~13 kinasas, balance exacto es imposible
+  prioritize_group_separation: true
+  
+  # Validar que no haya overlap de grupos entre splits
+  prevent_leakage: true
+  
+  # Generar reporte detallado de splits
+  verbose_reporting: true
 
 # ============================================================================
 # PREPROCESAMIENTO

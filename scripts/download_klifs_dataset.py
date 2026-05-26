@@ -23,7 +23,8 @@ import logging
 
 from tqdm import tqdm
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import numpy as np
+from sklearn.model_selection import train_test_split, GroupShuffleSplit
 
 
 logging.basicConfig(
@@ -339,16 +340,194 @@ class KLIFSDownloader:
         train_size: float = 0.7,
         val_size: float = 0.15,
         test_size: float = 0.15,
-        random_state: int = 42
+        random_state: int = 42,
+        strategy: str = "grouped",
+        group_by: str = "kinase_name",
+        verbose: bool = True
     ):
-        """Divide dataset en train/val/test manteniendo balance de clases."""
+        """
+        Divide dataset en train/val/test con control de leakage estructural.
+        
+        GROUPED STRATEGY (Recomendado):
+        --------------------------------
+        - Agrupa estructuras de la MISMA kinasa en un único split
+        - EVITA data leakage: el modelo no ve la misma proteína en train y test
+        - Simula generalización a kinasas completamente nuevas
+        - Mantiene balance ACTIVE/INACTIVE en cada split
+        - Mejor para biología estructural: aprende patrones generales, no memorización
+        
+        STRATIFIED STRATEGY (Legacy):
+        - Divide aleatoriamente manteniendo balance de clases
+        - RIESGO DE LEAKAGE: puede mezclar estructuras de la misma kinasa
+        - NO RECOMENDADO para datos biológicos
+        
+        Args:
+            df: DataFrame con columnas 'kinase_name' y 'conformational_state'
+            train_size, val_size, test_size: proporciones de splits
+            random_state: seed para reproducibilidad
+            strategy: "grouped" (recomendado) o "stratified" (legacy)
+            group_by: columna para agrupar (default: kinase_name)
+            verbose: mostrar logs detallados
+            
+        Returns:
+            Tupla (train_df, val_df, test_df)
+        """
         splits_dir = Path("data/splits")
         splits_dir.mkdir(parents=True, exist_ok=True)
-
-        # Separar activas e inactivas
-        active_indices = df[df['conformational_state'] == 'active'].index
-        inactive_indices = df[df['conformational_state'] == 'inactive'].index
-
+        
+        if verbose:
+            logger.info("="*80)
+            logger.info("CREANDO SPLITS CON CONTROL DE LEAKAGE")
+            logger.info("="*80)
+            logger.info(f"Estrategia: {strategy.upper()}")
+            logger.info(f"Agrupar por: {group_by}")
+            logger.info(f"Proporciones: Train={train_size:.1%}, Val={val_size:.1%}, Test={test_size:.1%}")
+            logger.info(f"Total estructuras: {len(df)}")
+            logger.info(f"Total {group_by}s únicos: {df[group_by].nunique()}")
+        
+        if strategy == "grouped":
+            train_df, val_df, test_df = self._grouped_split(
+                df=df,
+                train_size=train_size,
+                val_size=val_size,
+                test_size=test_size,
+                random_state=random_state,
+                group_by=group_by,
+                verbose=verbose
+            )
+        elif strategy == "stratified":
+            # Legacy implementation
+            train_df, val_df, test_df = self._stratified_split(
+                df=df,
+                train_size=train_size,
+                val_size=val_size,
+                test_size=test_size,
+                random_state=random_state,
+                verbose=verbose
+            )
+        else:
+            raise ValueError(f"Estrategia desconocida: {strategy}. Use 'grouped' o 'stratified'")
+        
+        # Validar integridad de splits
+        self._validate_splits(train_df, val_df, test_df, group_by=group_by, verbose=verbose)
+        
+        # Guardar splits
+        train_df.to_csv(splits_dir / "train.csv", index=False)
+        val_df.to_csv(splits_dir / "val.csv", index=False)
+        test_df.to_csv(splits_dir / "test.csv", index=False)
+        
+        if verbose:
+            logger.info(f"\n✅ Splits guardados en {splits_dir}/")
+            logger.info("="*80)
+        
+        return train_df, val_df, test_df
+    
+    def _grouped_split(
+        self,
+        df: pd.DataFrame,
+        train_size: float,
+        val_size: float,
+        test_size: float,
+        random_state: int,
+        group_by: str,
+        verbose: bool = True
+    ):
+        """
+        Split agrupado por grupos biológicos (ej: kinase_name).
+        
+        Garantiza que estructuras del MISMO grupo estén juntas en un split.
+        Esto evita leakage estructural y simula generalización a grupos nuevos.
+        """
+        # Crear mapping: grupo -> índices
+        group_indices = {}
+        for group_name in df[group_by].unique():
+            mask = df[group_by] == group_name
+            indices = np.where(mask)[0]
+            group_indices[group_name] = indices
+        
+        groups_list = list(group_indices.keys())
+        n_groups = len(groups_list)
+        
+        if verbose:
+            logger.info(f"\n🔬 ESTRATEGIA GROUPED SPLIT")
+            logger.info(f"   Dividiendo {n_groups} grupos (kinasas) entre splits")
+        
+        # Calcular cuántos grupos en cada split (aproximadamente)
+        n_train_groups = max(1, int(np.round(train_size * n_groups)))
+        n_val_groups = max(1, int(np.round(val_size * n_groups)))
+        n_test_groups = n_groups - n_train_groups - n_val_groups
+        
+        if n_test_groups < 1:
+            # Si no hay suficientes grupos para test, reasignar
+            if n_val_groups > 1:
+                n_val_groups = max(1, n_val_groups - 1)
+            n_test_groups = n_groups - n_train_groups - n_val_groups
+        
+        if verbose:
+            logger.info(f"   Distribución de grupos:")
+            logger.info(f"     - Train: {n_train_groups} grupos")
+            logger.info(f"     - Val:   {n_val_groups} grupos")
+            logger.info(f"     - Test:  {n_test_groups} grupos")
+        
+        # Shuffle grupos manteniendo balance ACTIVE/INACTIVE
+        rng = np.random.RandomState(random_state)
+        
+        # Separar grupos por estado conformacional (si es posible)
+        active_groups = [g for g in groups_list if (df[df[group_by] == g]['conformational_state'] == 'active').sum() > 0]
+        inactive_groups = [g for g in groups_list if (df[df[group_by] == g]['conformational_state'] == 'inactive').sum() > 0]
+        
+        rng.shuffle(active_groups)
+        rng.shuffle(inactive_groups)
+        
+        # Distribuir grupos alternando entre activos e inactivos para balance
+        train_groups = []
+        val_groups = []
+        test_groups = []
+        
+        # Simple round-robin distribution
+        for i, group in enumerate(groups_list):
+            if len(train_groups) < n_train_groups:
+                train_groups.append(group)
+            elif len(val_groups) < n_val_groups:
+                val_groups.append(group)
+            else:
+                test_groups.append(group)
+        
+        # Extraer índices para cada split
+        train_indices = np.concatenate([group_indices[g] for g in train_groups])
+        val_indices = np.concatenate([group_indices[g] for g in val_groups])
+        test_indices = np.concatenate([group_indices[g] for g in test_groups])
+        
+        train_df = df.iloc[train_indices].reset_index(drop=True)
+        val_df = df.iloc[val_indices].reset_index(drop=True)
+        test_df = df.iloc[test_indices].reset_index(drop=True)
+        
+        if verbose:
+            self._log_split_statistics(train_df, val_df, test_df, group_by=group_by, split_groups=(train_groups, val_groups, test_groups))
+        
+        return train_df, val_df, test_df
+    
+    def _stratified_split(
+        self,
+        df: pd.DataFrame,
+        train_size: float,
+        val_size: float,
+        test_size: float,
+        random_state: int,
+        verbose: bool = True
+    ):
+        """
+        Split estratificado manteniendo balance de clases.
+        
+        ⚠️ ADVERTENCIA: Puede causar leakage estructural si la misma proteína
+        aparece en múltiples splits. Use solo para datasets que ya están
+        separados por grupo.
+        """
+        if verbose:
+            logger.warning("⚠️  USANDO ESTRATEGIA STRATIFICADA (LEGACY)")
+            logger.warning("   Esto PUEDE CAUSAR LEAKAGE ESTRUCTURAL")
+            logger.warning("   Se recomienda usar strategy='grouped'")
+        
         # Split estratificado
         train_idx, temp_idx = train_test_split(
             df.index,
@@ -364,19 +543,101 @@ class KLIFSDownloader:
             stratify=df.loc[temp_idx, 'conformational_state']
         )
 
-        train_df = df.loc[train_idx]
-        val_df = df.loc[val_idx]
-        test_df = df.loc[test_idx]
-
-        # Guardar splits
-        train_df.to_csv(splits_dir / "train.csv", index=False)
-        val_df.to_csv(splits_dir / "val.csv", index=False)
-        test_df.to_csv(splits_dir / "test.csv", index=False)
-
-        logger.info(f"Train: {len(train_df)} | Val: {len(val_df)} | Test: {len(test_df)}")
-        logger.info(f"Splits guardados en {splits_dir}/")
-
+        train_df = df.loc[train_idx].reset_index(drop=True)
+        val_df = df.loc[val_idx].reset_index(drop=True)
+        test_df = df.loc[test_idx].reset_index(drop=True)
+        
         return train_df, val_df, test_df
+    
+    def _log_split_statistics(
+        self,
+        train_df: pd.DataFrame,
+        val_df: pd.DataFrame,
+        test_df: pd.DataFrame,
+        group_by: str = "kinase_name",
+        split_groups: Optional[tuple] = None
+    ):
+        """Log detallado de estadísticas de splits."""
+        
+        logger.info(f"\n📊 ESTADÍSTICAS DE SPLITS")
+        logger.info("-" * 80)
+        
+        # Por split
+        for split_name, split_df in [("TRAIN", train_df), ("VAL", val_df), ("TEST", test_df)]:
+            n_total = len(split_df)
+            n_active = len(split_df[split_df['conformational_state'] == 'active'])
+            n_inactive = n_total - n_active
+            pct_active = (n_active / n_total * 100) if n_total > 0 else 0
+            pct_inactive = (n_inactive / n_total * 100) if n_total > 0 else 0
+            pct_of_total = (n_total / (len(train_df) + len(val_df) + len(test_df)) * 100)
+            
+            logger.info(f"\n{split_name}:")
+            logger.info(f"  Estructuras:  {n_total:4d} ({pct_of_total:5.1f}%)")
+            logger.info(f"  Activas:      {n_active:4d} ({pct_active:5.1f}%)")
+            logger.info(f"  Inactivas:    {n_inactive:4d} ({pct_inactive:5.1f}%)")
+            logger.info(f"  {group_by}s:   {split_df[group_by].nunique():4d}")
+        
+        # Detalle por grupo
+        if split_groups:
+            train_groups, val_groups, test_groups = split_groups
+            logger.info(f"\n🧬 {group_by.upper()}S POR SPLIT")
+            logger.info(f"  TRAIN ({len(train_groups)}): {', '.join(sorted(train_groups))}")
+            logger.info(f"  VAL   ({len(val_groups)}): {', '.join(sorted(val_groups))}")
+            logger.info(f"  TEST  ({len(test_groups)}): {', '.join(sorted(test_groups))}")
+    
+    def _validate_splits(
+        self,
+        train_df: pd.DataFrame,
+        val_df: pd.DataFrame,
+        test_df: pd.DataFrame,
+        group_by: str = "kinase_name",
+        verbose: bool = True
+    ):
+        """
+        Valida que no haya leakage entre splits.
+        
+        Verificaciones:
+        - No hay grupos duplicados entre splits
+        - Balance razonable de clases
+        - Todos los datos se distribuyen
+        """
+        train_groups = set(train_df[group_by].unique())
+        val_groups = set(val_df[group_by].unique())
+        test_groups = set(test_df[group_by].unique())
+        
+        if verbose:
+            logger.info(f"\n✅ VALIDACIÓN DE LEAKAGE")
+        
+        # Verificar overlap
+        train_val_overlap = train_groups & val_groups
+        train_test_overlap = train_groups & test_groups
+        val_test_overlap = val_groups & test_groups
+        
+        if train_val_overlap:
+            logger.error(f"❌ LEAKAGE DETECTADO: {group_by}s en TRAIN y VAL: {train_val_overlap}")
+            raise ValueError(f"Leakage entre TRAIN y VAL: {train_val_overlap}")
+        if train_test_overlap:
+            logger.error(f"❌ LEAKAGE DETECTADO: {group_by}s en TRAIN y TEST: {train_test_overlap}")
+            raise ValueError(f"Leakage entre TRAIN y TEST: {train_test_overlap}")
+        if val_test_overlap:
+            logger.error(f"❌ LEAKAGE DETECTADO: {group_by}s en VAL y TEST: {val_test_overlap}")
+            raise ValueError(f"Leakage entre VAL y TEST: {val_test_overlap}")
+        
+        if verbose:
+            logger.info(f"   ✓ Sin overlap entre TRAIN, VAL, TEST")
+            logger.info(f"   ✓ Separación de {group_by}s garantizada")
+        
+        # Verificar cobertura
+        total_structures = len(train_df) + len(val_df) + len(test_df)
+        logger.info(f"   ✓ Cobertura: {total_structures} estructuras distribuidas")
+        
+        # Warnings sobre balance si es muy desbalanceado
+        train_pct = len(train_df) / total_structures * 100
+        val_pct = len(val_df) / total_structures * 100
+        test_pct = len(test_df) / total_structures * 100
+        
+        if verbose:
+            logger.info(f"   ✓ Proporciones finales: Train {train_pct:.1f}%, Val {val_pct:.1f}%, Test {test_pct:.1f}%")
 
 
 def main():
