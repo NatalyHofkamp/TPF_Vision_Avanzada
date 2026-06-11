@@ -1,0 +1,21 @@
+model,kinase,source_pdb,target_pdb,t,distance_to_source,distance_to_target,distance_to_active,distance_to_inactive,distance_matrix_consistency_error,is_observed_structure,supervision_status
+inverse_deactivation_guidance_1.0,KIT,8pqf,6gql,0.0,0.0,10.481769561767578,0.0,10.481769561767578,0.0,True,observed source endpoint
+inverse_deactivation_guidance_1.0,KIT,8pqf,6gql,0.25,1.403971791267395,10.203008651733398,1.403971791267395,10.203008651733398,0.8921400904655457,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,KIT,8pqf,6gql,0.5,2.7014970779418945,10.144368171691895,2.7014970779418945,10.144368171691895,1.7742608785629272,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,KIT,8pqf,6gql,0.75,3.8523824214935303,10.2489013671875,3.8523824214935303,10.2489013671875,2.649918794631958,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,KIT,8pqf,6gql,1.0,5.07414436340332,10.469223976135254,5.07414436340332,10.469223976135254,3.5336127281188965,False,generated endpoint prediction supervised against observed target
+inverse_deactivation_guidance_1.0,KIT,8pqc,6gql,0.0,0.0,9.128228187561035,0.0,9.128228187561035,0.0,True,observed source endpoint
+inverse_deactivation_guidance_1.0,KIT,8pqc,6gql,0.25,1.4129482507705688,8.85583209991455,1.4129482507705688,8.85583209991455,0.841888964176178,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,KIT,8pqc,6gql,0.5,2.719768524169922,8.829379081726074,2.719768524169922,8.829379081726074,1.6732808351516724,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,KIT,8pqc,6gql,0.75,3.879620313644409,8.98729133605957,3.879620313644409,8.98729133605957,2.497349262237549,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,KIT,8pqc,6gql,1.0,5.109570026397705,9.283748626708984,5.109570026397705,9.283748626708984,3.3307394981384277,False,generated endpoint prediction supervised against observed target
+inverse_deactivation_guidance_1.0,MET,4iwd,3rhk,0.0,0.0,9.511153221130371,0.0,9.511153221130371,0.0,True,observed source endpoint
+inverse_deactivation_guidance_1.0,MET,4iwd,3rhk,0.25,1.4774960279464722,9.249715805053711,1.4774960279464722,9.249715805053711,0.804826021194458,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,MET,4iwd,3rhk,0.5,2.8491928577423096,9.245731353759766,2.8491928577423096,9.245731353759766,1.6086525917053223,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,MET,4iwd,3rhk,0.75,4.081288814544678,9.425987243652344,4.081288814544678,9.425987243652344,2.4068710803985596,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,MET,4iwd,3rhk,1.0,5.389338493347168,9.76291561126709,5.389338493347168,9.76291561126709,3.207113265991211,False,generated endpoint prediction supervised against observed target
+inverse_deactivation_guidance_1.0,MET,3efk,3efj,0.0,0.0,0.5857927799224854,0.0,0.5857927799224854,0.0,True,observed source endpoint
+inverse_deactivation_guidance_1.0,MET,3efk,3efj,0.25,1.4775851964950562,1.5972504615783691,1.4775851964950562,1.5972504615783691,0.411359965801239,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,MET,3efk,3efj,0.5,2.863870143890381,2.930525779724121,2.863870143890381,2.930525779724121,0.8340749740600586,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,MET,3efk,3efj,0.75,4.11712646484375,4.164116382598877,4.11712646484375,4.164116382598877,1.2680760622024536,False,latent generated hypothesis
+inverse_deactivation_guidance_1.0,MET,3efk,3efj,1.0,5.439257621765137,5.475494384765625,5.439257621765137,5.475494384765625,1.7196687459945679,False,generated endpoint prediction supervised against observed target

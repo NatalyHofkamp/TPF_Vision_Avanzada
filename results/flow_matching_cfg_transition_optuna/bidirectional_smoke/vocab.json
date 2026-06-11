@@ -1,0 +1,35 @@
+{
+  "state": {
+    "<NULL>": 0,
+    "<UNK>": 1,
+    "active": 2,
+    "inactive": 3
+  },
+  "kinase": {
+    "<NULL>": 0,
+    "<UNK>": 1,
+    "ABL1": 2,
+    "AKT1": 3,
+    "ALK": 4,
+    "BRAF": 5,
+    "CDK4": 6,
+    "CDK6": 7,
+    "EGFR": 8,
+    "ERBB2": 9,
+    "FGFR1": 10
+  },
+  "dfg": {
+    "<NULL>": 0,
+    "<UNK>": 1,
+    "in": 2,
+    "out": 3,
+    "out-like": 4
+  },
+  "alphac": {
+    "<NULL>": 0,
+    "<UNK>": 1,
+    "in": 2,
+    "na": 3,
+    "out": 4
+  }
+}

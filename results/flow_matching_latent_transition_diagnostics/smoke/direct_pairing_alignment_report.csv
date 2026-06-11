@@ -1,0 +1,14 @@
+split,kinase,source_states,target_states,source_structures,target_structures,candidate_pairs,valid_pairs,selected_pairs,mean_aligned_residues,mean_alignment_coverage,mean_sequence_identity,same_chain_id_rate,same_ligand_rate,mean_resolution_difference,mean_sequence_mismatches,mean_missing_residue_ids,rejections
+train,ABL1,inactive,active,36,7,252,142,2,274.0,0.9961977186311788,1.0,1.0,1.0,0.03849999999999998,0.0,5.5,"{'identity': 45, 'resolution': 61, 'ligand': 51, 'coverage': 35, 'length': 35}"
+train,AKT1,inactive,active,17,16,272,0,0,,,,,,,,,"{'coverage': 272, 'ligand': 61, 'length': 36, 'identity': 12, 'resolution': 6}"
+train,ALK,inactive,active,3,61,183,159,2,280.5,0.9739583333333333,1.0,1.0,1.0,0.08500000000000008,0.0,49.0,{'ligand': 24}
+train,BRAF,inactive,active,88,21,1848,912,2,262.0,0.9924242424242424,1.0,1.0,1.0,0.05500000000000016,0.0,22.5,"{'resolution': 490, 'ligand': 651, 'coverage': 90, 'length': 101, 'identity': 115}"
+train,CDK4,inactive,active,11,3,33,1,1,194.0,0.751937984496124,1.0,0.0,1.0,0.71,0.0,20.0,"{'ligand': 11, 'coverage': 18, 'length': 14, 'resolution': 21}"
+train,CDK6,inactive,active,14,5,70,42,2,265.5,0.9311800002464238,1.0,0.0,1.0,0.25,0.0,25.5,"{'ligand': 26, 'resolution': 4}"
+train,EGFR,inactive,active,107,160,17120,9008,2,308.0,0.9794650080906149,0.9983606557377049,1.0,1.0,0.09699999999999986,0.5,3.0,"{'resolution': 3550, 'ligand': 4335, 'identity': 1675, 'coverage': 960, 'length': 960}"
+train,ERBB2,inactive,active,3,2,6,1,1,261.0,0.9125874125874126,1.0,0.0,1.0,0.96,0.0,32.0,"{'identity': 2, 'resolution': 3}"
+train,FGFR1,inactive,active,1,60,60,53,2,268.5,0.9728191663931736,1.0,1.0,1.0,0.125,0.0,54.5,{'ligand': 7}
+val,KIT,inactive,active,25,10,250,190,2,292.5,0.9815436241610738,1.0,1.0,1.0,0.17499999999999982,0.0,137.0,"{'resolution': 44, 'ligand': 40, 'coverage': 30, 'length': 30}"
+val,MET,inactive,active,95,6,570,457,2,284.0,0.9882943143812709,1.0,1.0,1.0,0.22499999999999998,0.0,25.0,"{'ligand': 107, 'resolution': 6, 'length': 4, 'coverage': 3}"
+test,PDGFRA,inactive,active,9,2,18,8,2,306.5,0.963146385387188,0.9984423676012462,1.0,1.0,0.30000000000000004,0.5,195.5,"{'ligand': 8, 'resolution': 2}"
+test,PIK3CA,inactive,active,4,97,388,171,2,1040.0,0.9923718474005281,1.0,1.0,1.0,0.010000000000000009,0.0,67.5,"{'ligand': 194, 'coverage': 4, 'length': 5, 'resolution': 29}"

@@ -1,0 +1,2 @@
+kinase,pairs,rmsd,initial_rmsd,distance_error,diversity,improvement,closer_to_target_rate,destination_crossing_rate,closer_to_active_rate,closer_to_inactive_rate
+PDGFRA,4,22.751342296600342,11.390217065811157,6.285894989967346,7.673123359680176,-1.1883763503577072,0.0,0.0,0.0,1.0

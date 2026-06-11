@@ -1,0 +1,3 @@
+optuna>=4.0
+plotly>=5.0
+umap-learn>=0.5

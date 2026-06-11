@@ -1,0 +1,21 @@
+variant,kinase,source_pdb,target_pdb,t,distance_to_source,distance_to_target,distance_matrix_consistency_error,is_observed_structure,supervision_status
+current_index_matching,PDGFRA,6joi,8pqi,0.0,0.0,6.668856620788574,0.0,True,observed source endpoint
+current_index_matching,PDGFRA,6joi,8pqi,0.25,6.096712112426758,8.994054794311523,1.2842471599578857,False,latent generated hypothesis
+current_index_matching,PDGFRA,6joi,8pqi,0.5,11.779753684997559,13.458380699157715,2.4468960762023926,False,latent generated hypothesis
+current_index_matching,PDGFRA,6joi,8pqi,0.75,17.674327850341797,18.763742446899414,3.5355441570281982,False,latent generated hypothesis
+current_index_matching,PDGFRA,6joi,8pqi,1.0,23.732656478881836,24.484943389892578,4.665609359741211,False,generated endpoint supervised against observed target
+current_index_matching,PDGFRA,6joj,8pqh,0.0,0.0,10.359614372253418,0.0,True,observed source endpoint
+current_index_matching,PDGFRA,6joj,8pqh,0.25,6.054358959197998,11.906064987182617,1.6417702436447144,False,latent generated hypothesis
+current_index_matching,PDGFRA,6joj,8pqh,0.5,11.725103378295898,15.568097114562988,3.2265141010284424,False,latent generated hypothesis
+current_index_matching,PDGFRA,6joj,8pqh,0.75,17.602893829345703,20.377103805541992,4.768102169036865,False,latent generated hypothesis
+current_index_matching,PDGFRA,6joj,8pqh,1.0,23.665918350219727,25.746057510375977,6.334661960601807,False,generated endpoint supervised against observed target
+current_index_matching,PIK3CA,5sxe,5sx9,0.0,0.0,4.221999645233154,0.0,True,observed source endpoint
+current_index_matching,PIK3CA,5sxe,5sx9,0.25,9.741307258605957,10.603449821472168,1.8956581354141235,False,latent generated hypothesis
+current_index_matching,PIK3CA,5sxe,5sx9,0.5,18.989879608154297,19.422725677490234,3.551445245742798,False,latent generated hypothesis
+current_index_matching,PIK3CA,5sxe,5sx9,0.75,28.543888092041016,28.819252014160156,5.107111930847168,False,latent generated hypothesis
+current_index_matching,PIK3CA,5sxe,5sx9,1.0,38.298828125,38.48249435424805,6.844974517822266,False,generated endpoint supervised against observed target
+current_index_matching,PIK3CA,5sxe,5swo,0.0,0.0,5.622324466705322,0.0,True,observed source endpoint
+current_index_matching,PIK3CA,5sxe,5swo,0.25,9.741307258605957,11.283307075500488,1.9673126935958862,False,latent generated hypothesis
+current_index_matching,PIK3CA,5sxe,5swo,0.5,18.989879608154297,19.851747512817383,3.728571653366089,False,latent generated hypothesis
+current_index_matching,PIK3CA,5sxe,5swo,0.75,28.543888092041016,29.154813766479492,5.464588642120361,False,latent generated hypothesis
+current_index_matching,PIK3CA,5sxe,5swo,1.0,38.298828125,38.788818359375,7.436479568481445,False,generated endpoint supervised against observed target

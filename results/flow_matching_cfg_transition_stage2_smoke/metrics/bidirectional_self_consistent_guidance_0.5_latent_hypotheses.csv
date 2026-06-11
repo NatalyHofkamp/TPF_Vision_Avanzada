@@ -1,0 +1,41 @@
+model,kinase,source_pdb,target_pdb,t,distance_to_source,distance_to_target,distance_to_active,distance_to_inactive,distance_matrix_consistency_error,is_observed_structure,supervision_status
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqf,0.0,0.0,10.4865083694458,10.4865083694458,0.0,0.0,True,observed source endpoint
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqf,0.25,1.4352360963821411,11.003071784973145,11.003071784973145,1.4352360963821411,1.073547601699829,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqf,0.5,2.7491707801818848,11.612203598022461,11.612203598022461,2.7491707801818848,2.0691001415252686,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqf,0.75,4.1031951904296875,12.314279556274414,12.314279556274414,4.1031951904296875,3.033827304840088,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqf,1.0,5.5728864669799805,13.26438045501709,13.26438045501709,5.5728864669799805,4.047391414642334,False,generated endpoint prediction supervised against observed target
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqc,0.0,0.0,9.130705833435059,9.130705833435059,0.0,0.0,True,observed source endpoint
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqc,0.25,1.4484211206436157,9.631943702697754,9.631943702697754,1.4484211206436157,0.9874752163887024,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqc,0.5,2.766859531402588,10.241518020629883,10.241518020629883,2.766859531402588,1.8982468843460083,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqc,0.75,4.123746395111084,10.967187881469727,10.967187881469727,4.123746395111084,2.7828903198242188,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,6gql,8pqc,1.0,5.606192588806152,11.949997901916504,11.949997901916504,5.606192588806152,3.7189269065856934,False,generated endpoint prediction supervised against observed target
+bidirectional_self_consistent_guidance_0.5,MET,3rhk,4iwd,0.0,0.0,9.51522445678711,9.51522445678711,0.0,0.0,True,observed source endpoint
+bidirectional_self_consistent_guidance_0.5,MET,3rhk,4iwd,0.25,1.4940006732940674,10.087968826293945,10.087968826293945,1.4940006732940674,0.9899845719337463,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3rhk,4iwd,0.5,2.876232385635376,10.749529838562012,10.749529838562012,2.876232385635376,1.942398190498352,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3rhk,4iwd,0.75,4.30560302734375,11.542378425598145,11.542378425598145,4.30560302734375,2.9422173500061035,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3rhk,4iwd,1.0,5.852384567260742,12.601175308227539,12.601175308227539,5.852384567260742,3.9796500205993652,False,generated endpoint prediction supervised against observed target
+bidirectional_self_consistent_guidance_0.5,MET,3efj,3efk,0.0,0.0,0.585792064666748,0.585792064666748,0.0,0.0,True,observed source endpoint
+bidirectional_self_consistent_guidance_0.5,MET,3efj,3efk,0.25,1.5588628053665161,1.6986212730407715,1.6986212730407715,1.5588628053665161,0.518126368522644,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3efj,3efk,0.5,3.057223320007324,3.15103816986084,3.15103816986084,3.057223320007324,0.9985930323600769,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3efj,3efk,0.75,4.600732326507568,4.673918724060059,4.673918724060059,4.600732326507568,1.5597333908081055,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3efj,3efk,1.0,6.239970684051514,6.297360897064209,6.297360897064209,6.239970684051514,2.2315404415130615,False,generated endpoint prediction supervised against observed target
+bidirectional_self_consistent_guidance_0.5,KIT,8pqf,6gql,0.0,0.0,10.481769561767578,0.0,10.481769561767578,0.0,True,observed source endpoint
+bidirectional_self_consistent_guidance_0.5,KIT,8pqf,6gql,0.25,1.530077338218689,10.104090690612793,1.530077338218689,10.104090690612793,0.9772394299507141,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,8pqf,6gql,0.5,2.830815076828003,9.943087577819824,2.830815076828003,9.943087577819824,1.8602665662765503,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,8pqf,6gql,0.75,4.050058841705322,10.012755393981934,4.050058841705322,10.012755393981934,2.792813539505005,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,8pqf,6gql,1.0,5.492046356201172,10.230194091796875,5.492046356201172,10.230194091796875,3.809300184249878,False,generated endpoint prediction supervised against observed target
+bidirectional_self_consistent_guidance_0.5,KIT,8pqc,6gql,0.0,0.0,9.128228187561035,0.0,9.128228187561035,0.0,True,observed source endpoint
+bidirectional_self_consistent_guidance_0.5,KIT,8pqc,6gql,0.25,1.5449597835540771,8.76962947845459,1.5449597835540771,8.76962947845459,0.9532212018966675,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,8pqc,6gql,0.5,2.861635446548462,8.659893035888672,2.861635446548462,8.659893035888672,1.8111369609832764,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,8pqc,6gql,0.75,4.105284214019775,8.792379379272461,4.105284214019775,8.792379379272461,2.7104053497314453,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,KIT,8pqc,6gql,1.0,5.580023288726807,9.120878219604492,5.580023288726807,9.120878219604492,3.6949455738067627,False,generated endpoint prediction supervised against observed target
+bidirectional_self_consistent_guidance_0.5,MET,4iwd,3rhk,0.0,0.0,9.511153221130371,0.0,9.511153221130371,0.0,True,observed source endpoint
+bidirectional_self_consistent_guidance_0.5,MET,4iwd,3rhk,0.25,1.5252882242202759,9.175487518310547,1.5252882242202759,9.175487518310547,0.8433883190155029,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,4iwd,3rhk,0.5,2.8340797424316406,9.102764129638672,2.8340797424316406,9.102764129638672,1.653289794921875,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,4iwd,3rhk,0.75,4.078028678894043,9.243322372436523,4.078028678894043,9.243322372436523,2.4933643341064453,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,4iwd,3rhk,1.0,5.529693603515625,9.545382499694824,5.529693603515625,9.545382499694824,3.3610000610351562,False,generated endpoint prediction supervised against observed target
+bidirectional_self_consistent_guidance_0.5,MET,3efk,3efj,0.0,0.0,0.5857927799224854,0.0,0.5857927799224854,0.0,True,observed source endpoint
+bidirectional_self_consistent_guidance_0.5,MET,3efk,3efj,0.25,1.5918675661087036,1.6717180013656616,1.5918675661087036,1.6717180013656616,0.5811702013015747,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3efk,3efj,0.5,3.015578508377075,3.044018030166626,3.015578508377075,3.044018030166626,1.1409218311309814,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3efk,3efj,0.75,4.410315036773682,4.423407077789307,4.410315036773682,4.423407077789307,1.8092410564422607,False,latent generated hypothesis
+bidirectional_self_consistent_guidance_0.5,MET,3efk,3efj,1.0,6.004117965698242,6.012989521026611,6.004117965698242,6.012989521026611,2.595024585723877,False,generated endpoint prediction supervised against observed target

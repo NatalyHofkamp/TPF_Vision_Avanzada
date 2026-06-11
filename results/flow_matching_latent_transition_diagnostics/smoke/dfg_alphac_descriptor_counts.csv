@@ -1,0 +1,15 @@
+split,motif_descriptor,count
+test,active,98
+test,dfg_in_alphac_out,1
+test,dfg_out_alphac_in,12
+test,unknown,1
+train,active,333
+train,dfg_in_alphac_out,160
+train,dfg_out_alphac_in,79
+train,inactive,25
+train,unknown,18
+val,active,15
+val,dfg_in_alphac_out,65
+val,dfg_out_alphac_in,42
+val,inactive,9
+val,unknown,5

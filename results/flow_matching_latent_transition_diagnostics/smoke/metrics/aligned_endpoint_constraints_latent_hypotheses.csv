@@ -1,0 +1,21 @@
+variant,kinase,source_pdb,target_pdb,t,distance_to_source,distance_to_target,distance_matrix_consistency_error,is_observed_structure,supervision_status
+aligned_endpoint_constraints,PDGFRA,6joi,8pqi,0.0,0.0,1.403868556022644,0.0,True,observed source endpoint
+aligned_endpoint_constraints,PDGFRA,6joi,8pqi,0.25,5.845399379730225,5.947664260864258,0.9569504857063293,False,latent generated hypothesis
+aligned_endpoint_constraints,PDGFRA,6joi,8pqi,0.5,11.493526458740234,11.5109224319458,1.8749269247055054,False,latent generated hypothesis
+aligned_endpoint_constraints,PDGFRA,6joi,8pqi,0.75,17.38982391357422,17.375574111938477,2.6309235095977783,False,latent generated hypothesis
+aligned_endpoint_constraints,PDGFRA,6joi,8pqi,1.0,23.283756256103516,23.251726150512695,3.4790172576904297,False,generated endpoint supervised against observed target
+aligned_endpoint_constraints,PDGFRA,6joj,8pqh,0.0,0.0,11.113457679748535,0.0,True,observed source endpoint
+aligned_endpoint_constraints,PDGFRA,6joj,8pqh,0.25,5.708945274353027,12.720407485961914,1.4806325435638428,False,latent generated hypothesis
+aligned_endpoint_constraints,PDGFRA,6joj,8pqh,0.5,11.22417163848877,16.08994483947754,2.95308256149292,False,latent generated hypothesis
+aligned_endpoint_constraints,PDGFRA,6joj,8pqh,0.75,17.03668212890625,20.533367156982422,4.313279628753662,False,latent generated hypothesis
+aligned_endpoint_constraints,PDGFRA,6joj,8pqh,1.0,22.842554092407227,25.52555274963379,5.662190914154053,False,generated endpoint supervised against observed target
+aligned_endpoint_constraints,PIK3CA,5sxe,5sx9,0.0,0.0,0.31298500299453735,0.0,True,observed source endpoint
+aligned_endpoint_constraints,PIK3CA,5sxe,5sx9,0.25,10.20139217376709,10.143434524536133,1.6334364414215088,False,latent generated hypothesis
+aligned_endpoint_constraints,PIK3CA,5sxe,5sx9,0.5,19.79676628112793,19.735109329223633,3.072054147720337,False,latent generated hypothesis
+aligned_endpoint_constraints,PIK3CA,5sxe,5sx9,0.75,29.719255447387695,29.65587043762207,4.11030912399292,False,latent generated hypothesis
+aligned_endpoint_constraints,PIK3CA,5sxe,5sx9,1.0,39.6839485168457,39.62168884277344,5.457614421844482,False,generated endpoint supervised against observed target
+aligned_endpoint_constraints,PIK3CA,5sxe,5swo,0.0,0.0,0.4149026870727539,0.0,True,observed source endpoint
+aligned_endpoint_constraints,PIK3CA,5sxe,5swo,0.25,10.195635795593262,10.141548156738281,1.7080134153366089,False,latent generated hypothesis
+aligned_endpoint_constraints,PIK3CA,5sxe,5swo,0.5,19.80931854248047,19.755245208740234,3.268376111984253,False,latent generated hypothesis
+aligned_endpoint_constraints,PIK3CA,5sxe,5swo,0.75,29.731891632080078,29.678247451782227,4.46225118637085,False,latent generated hypothesis
+aligned_endpoint_constraints,PIK3CA,5sxe,5swo,1.0,39.695343017578125,39.638214111328125,5.930820465087891,False,generated endpoint supervised against observed target
