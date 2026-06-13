@@ -1,0 +1,4 @@
+split,kinases,n_kinases
+train,"ABL1, AKT1, ALK, BRAF, CDK4, CDK6, EGFR, ERBB2, FGFR1",9
+val,"KIT, MET",2
+test,"PDGFRA, PIK3CA",2

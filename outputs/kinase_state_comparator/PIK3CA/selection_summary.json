@@ -1,0 +1,33 @@
+{
+  "active": {
+    "pdb_id": "4jps",
+    "state": "active",
+    "resolution": 2.2,
+    "ligand_present": 1,
+    "dfg_state": "in",
+    "alphac_state": "in",
+    "chain": "A",
+    "residues": 999,
+    "missing_internal_ids": 61,
+    "model_active_probability": "0.97927356"
+  },
+  "inactive": {
+    "pdb_id": "7myn",
+    "state": "inactive",
+    "resolution": 2.79,
+    "ligand_present": 0,
+    "dfg_state": "out-like",
+    "alphac_state": "in",
+    "chain": "A",
+    "residues": 977,
+    "missing_internal_ids": 67,
+    "model_active_probability": "0.9236479"
+  },
+  "global_metrics": {
+    "global_rmsd": 1.2895004930386709,
+    "distance_matrix_error": 0.9152704923458379,
+    "alignment_coverage": 0.9679679679679679,
+    "sequence_identity": 1.0,
+    "compared_residues": 967
+  }
+}

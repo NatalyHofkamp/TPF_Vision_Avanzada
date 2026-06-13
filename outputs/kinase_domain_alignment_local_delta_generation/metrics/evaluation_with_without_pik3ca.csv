@@ -1,0 +1,2 @@
+pik3ca_group,samples,improvement_vs_copy,improvement_vs_noise,improvement_vs_interpolation,source_generated_rmsd,generated_target_rmsd,dfg_progress,alphac_progress,activation_loop_progress,geometric_validity,global_conservation
+without_PIK3CA,36,2.046662817398707,2.114772859546873,0.8041465994384553,3.5356299065881305,2.9234018988079495,-0.006252501832528247,-0.048479497672006905,0.008006013360702328,0.8511352274152968,0.2561323344707489

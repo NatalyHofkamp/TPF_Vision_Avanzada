@@ -1,0 +1,27 @@
+{
+  "kinase": null,
+  "components": [
+    "DFG",
+    "alphaC",
+    "activation_loop",
+    "HRD",
+    "Lys-Glu"
+  ],
+  "prefer_ligand": false,
+  "max_resolution": null,
+  "states": [
+    "active",
+    "inactive"
+  ],
+  "use_full_dataset": true,
+  "epochs": 100,
+  "batch_size": 32,
+  "validation_split": 0.2,
+  "learning_rate": 0.0003,
+  "weight_decay": 0.0001,
+  "patience": 20,
+  "seed": 42,
+  "resume": false,
+  "all_kinases": true,
+  "force_train": false
+}

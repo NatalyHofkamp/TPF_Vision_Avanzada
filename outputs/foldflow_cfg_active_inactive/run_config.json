@@ -1,0 +1,22 @@
+{
+  "seed": 42,
+  "epochs": 500,
+  "batch_size": 12,
+  "learning_rate": 0.0003,
+  "weight_decay": 1e-05,
+  "num_points": 256,
+  "max_pairs_per_kinase": 256,
+  "hidden_dim": 192,
+  "embedding_dim": 32,
+  "num_layers": 4,
+  "dropout": 0.1,
+  "condition_dropout": 0.15,
+  "noise_std": 0.02,
+  "guidance_scale": 2.0,
+  "integration_steps": 32,
+  "grad_clip": 1.0,
+  "num_workers": 0,
+  "metric_every": 5,
+  "device": "mps",
+  "representation": "resampled_C_alpha"
+}

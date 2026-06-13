@@ -1,0 +1,22 @@
+close
+open active_selected.pdb
+open inactive_selected.pdb
+matchmaker #2 to #1
+cartoon
+color #1 green
+color #2 gray
+style #1:524,525,526,527,528,529,530,531,532,533,534,535,536,537,538 stick
+style #2:524,525,526,527,528,529,530,531,532,533,534,535,536,537,538 stick
+color #1:524,525,526,527,528,529,530,531,532,533,534,535,536,537,538 cyan
+color #2:524,525,526,527,528,529,530,531,532,533,534,535,536,537,538 cyan
+style #1:619,620,621,622,623,624,625 stick
+style #2:619,620,621,622,623,624,625 stick
+color #1:619,620,621,622,623,624,625 yellow
+color #2:619,620,621,622,623,624,625 yellow
+style #1:514,531 stick
+style #2:514,531 stick
+color #1:514,531 red
+color #2:514,531 red
+view
+set bgColor white
+save active_inactive_chimerax.png width 1600 height 1200

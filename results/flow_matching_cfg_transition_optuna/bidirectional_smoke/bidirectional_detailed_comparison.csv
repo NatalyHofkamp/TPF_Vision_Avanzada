@@ -1,3 +1,0 @@
-Dirección,direction,pairs,final_rmsd,final_rmsd_std,initial_target_rmsd,relative_improvement,percent_closer_to_target,percent_crosses_destination,distance_to_active,distance_to_inactive,path_length,distance_matrix_mae,% más cerca del target,% cruza al estado destino
-Inactiva -> Activa,activation,4,22.751342296600342,2.0292871066805236,11.390217065811157,-1.1883763503577072,0.0,0.0,22.751342296600342,19.40501594543457,19.569718837738037,6.285894989967346,0.0,0.0
-Activa -> Inactiva,deactivation,4,17.348144054412842,2.4821752247443682,11.390217065811157,-0.6520004162985668,0.0,0.0,12.208795309066772,17.348144054412842,12.281780004501343,7.392911911010742,0.0,0.0

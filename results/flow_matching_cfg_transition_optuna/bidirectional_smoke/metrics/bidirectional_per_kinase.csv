@@ -1,3 +1,0 @@
-kinase,direction,pairs,final_rmsd,relative_improvement,closer_to_target_rate,destination_crossing_rate
-PDGFRA,activation,4,22.751342296600342,-1.1883763503577072,0.0,0.0
-PDGFRA,deactivation,4,17.348144054412842,-0.6520004162985668,0.0,0.0

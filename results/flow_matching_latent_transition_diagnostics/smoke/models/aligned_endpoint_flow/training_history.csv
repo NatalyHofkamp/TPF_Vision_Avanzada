@@ -1,2 +1,0 @@
-epoch,validation_loss,train_total_loss,train_flow_loss,train_endpoint_loss,train_distance_loss,train_motif_loss,train_smoothness_loss,train_directionality_loss,train_self_consistency_loss,train_classifier_loss
-1,0.6985251903533936,0.6585852205753326,0.6585852205753326,0.6418694704771042,0.11643407866358757,0.11216014623641968,0.05415210872888565,0.13215803354978561,0.0,0.6717766523361206

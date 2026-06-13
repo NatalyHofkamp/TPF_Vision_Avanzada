@@ -1,2 +1,0 @@
-variant,pairs,global_ca_rmsd,relative_improvement,closer_to_target_rate,note
-historical_binary_index_model,8,12.190746188163757,-0.004454337493555175,0.25,"Historical reference only: binary labels, normalized-index matching and a different PDGFRA test-pair definition."

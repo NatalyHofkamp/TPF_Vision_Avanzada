@@ -1,7 +1,0 @@
-split,state,count
-test,active,99
-test,inactive,13
-train,active,335
-train,inactive,280
-val,active,16
-val,inactive,120

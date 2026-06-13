@@ -1,7 +1,0 @@
-variant,rmsd_change_vs_current_index,rmsd_reduction_vs_current_index,directly_comparable_pair_set
-aligned_full_conditioning,-20.075243949890137,20.075243949890137,True
-bidirectional_self_consistent,-11.106496453285217,11.106496453285217,True
-inverse_deactivation,-8.940432071685791,8.940432071685791,False
-current_index_matching,0.0,0.0,True
-aligned_endpoint_constraints,0.13371706008911133,-0.13371706008911133,True
-aligned_endpoint_flow,3.321399688720703,-3.321399688720703,True

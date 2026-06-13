@@ -1,478 +1,379 @@
-# Troubleshooting & Common Issues
+# Tips y Troubleshooting
 
-**Solutions to common problems in the KLIFS pipeline.**
+## Errores Comunes y Soluciones
 
----
+### 1. Import Error: No module named 'requests'
 
-## Installation Issues
+**Error:**
+```
+ModuleNotFoundError: No module named 'requests'
+```
 
-### `ModuleNotFoundError: No module named 'requests'`
-
+**Solución:**
 ```bash
+pip install requests
+# o
 pip install -r requirements.txt
 ```
 
-### `ImportError: cannot import name 'PDBParser'`
+### 2. Error: "No kinases found"
 
-```bash
-pip install biopython
+**Error:**
+```
+RuntimeError: No se encontraron kinasas relacionadas con cáncer
 ```
 
-### `ImportError: No module named 'torch'`
+**Causas:**
+- No hay conexión a internet
+- KLIFS API está caída
+- Cambió la estructura de la API
 
+**Solución:**
 ```bash
-pip install torch
+# Verificar KLIFS está funcionando
+curl https://klifs.net
+
+# Verificar conectividad
+python -c "import requests; requests.get('https://klifs.net')"
+
+# Comprobar si hay errores en logs
+python scripts/download_klifs_dataset.py 2>&1 | head -50
 ```
 
----
+### 3. Error: "File not found: filepath"
 
-## KLIFS API Issues
+**Problema:** El PDB descargado no existe cuando se intenta procesar.
 
-### Connection Error: "Cannot reach KLIFS API"
+**Solución:**
+```bash
+# Verificar que la descarga completó
+ls data/raw/pdbs/ | wc -l
 
-**Symptoms:**
+# Si está vacío, reiniciar descarga
+make download-dataset
+```
+
+### 4. Out of Memory
+
+**Error:**
+```
+CUDA out of memory. Tried to allocate ...
+# o
+MemoryError: Unable to allocate ...
+```
+
+**Soluciones:**
+```bash
+# Opción 1: Reducir batch size en preprocess_dataset.py
+# batch_size = 8  # en lugar de 32
+
+# Opción 2: Procesar solo subset del dataset
+python -c "
+import pandas as pd
+df = pd.read_csv('data/splits/train.csv')
+df.head(100).to_csv('data/splits/train_small.csv', index=False)
+"
+
+# Opción 3: Usar CPU en lugar de GPU
+export CUDA_VISIBLE_DEVICES=""
+```
+
+### 5. Error de Conexión a KLIFS
+
+**Error:**
 ```
 requests.exceptions.ConnectionError
 requests.exceptions.Timeout
 ```
 
-**Solutions:**
+**Soluciones:**
+```bash
+# Verificar firewall/proxy
+ping klifs.net
+
+# Aumentar timeout en download_klifs_dataset.py
+downloader = KLIFSDownloader(retry_delay=2.0)
+
+# Usar VPN si está bloqueado regionalmente
+```
+
+### 6. API Rate Limiting
+
+**Problema:** KLIFS rechaza requests (429 Too Many Requests)
+
+**Solución:**
+```python
+# En download_klifs_dataset.py
+# Aumentar delay entre requests
+time.sleep(0.5)  # en lugar de 0.1
+```
+
+## Optimizaciones
+
+### 1. Acelerar Descarga
+
+Si la descarga es lenta:
 
 ```bash
-# 1. Check KLIFS is online
-curl https://klifs.net
+# Usar concurrencia (requiere concurrent.futures)
+# O descargar solo kinasas específicas
 
-# 2. Verify your internet connection
-ping google.com
-
-# 3. Try again later (API might be down)
-
-# 4. If behind proxy/firewall
-# - Configure requests to use your proxy
-# - Contact your sysadmin
+# Editar download_klifs_dataset.py
+CANCER_KINASES = {
+    'EGFR': 'tyrosine kinase',
+    'BRAF': 'serine/threonine kinase',
+}
 ```
 
-### Rate Limiting: "429 Too Many Requests"
+### 2. Acelerar Preprocessing
 
-The pipeline already has delays (`rate_limit_delay: 0.1` in config.yaml).
-
-**If still getting rate-limited:**
-
-```yaml
-# In config.yaml
-download:
-  rate_limit_delay: 0.5  # Increase from 0.1 to 0.5
-  max_retries: 5         # More retries
-  retry_delay: 2.0       # Wait longer between retries
-```
-
----
-
-## Dataset Download Issues
-
-### Error: "No kinases found"
-
-**Cause**: KLIFS API structure might have changed or no kinases match filter.
-
-**Solution**:
-```bash
-# Check the API response manually
-curl https://klifs.net/api/kinases_list
-
-# Or test the download with verbose logging
-python -c "
-import logging
-logging.basicConfig(level=logging.DEBUG)
-from scripts.download_klifs_dataset import KLIFSDownloader
-downloader = KLIFSDownloader()
-downloader.download_all()
-"
-```
-
-### Download Interrupted (Incomplete PDB Files)
-
-**Solution**:
+Si el preprocessing es lento:
 
 ```bash
-# 1. Check how many PDBs were downloaded
-ls data/raw/pdbs/ | wc -l
+# Aumentar batch size
+batch_size = 64  # (si tienes memoria)
 
-# 2. Re-run the download
-# The script skips already-downloaded files, so it will resume
-python scripts/download_klifs_dataset.py
+# Usar más workers en DataLoader
+DataLoader(dataset, num_workers=4)
 
-# 3. Or start fresh (if many are corrupted)
-rm -rf data/raw/pdbs/
-python scripts/download_klifs_dataset.py
+# Usar GPU si disponible
+# PyTorch detecta automáticamente
 ```
 
-### Disk Space Issues
+### 3. Reducir Tamaño del Dataset
 
-The full dataset requires ~2-3 GB for PDB files.
-
-**Solutions**:
-
-```bash
-# Option 1: Download only specific kinases
-# Edit config.yaml and include only kinases you need
-
-# Option 2: Remove PDBs after preprocessing
-# (can re-download later if needed)
-rm -rf data/raw/pdbs/
-
-# Option 3: Check disk space
-df -h  # Linux/Mac
-dir   # Windows
-```
-
----
-
-## Preprocessing Issues
-
-### Out of Memory During Preprocessing
-
-**Error:**
-```
-CUDA out of memory. Tried to allocate...
-MemoryError: Unable to allocate...
-```
-
-**Solutions**:
-
-```bash
-# Option 1: Reduce batch size
-# Edit config.yaml
-preprocessing:
-  batch_size: 8  # Instead of 32
-```
-
-```bash
-# Option 2: Use CPU instead of GPU
-export CUDA_VISIBLE_DEVICES=""
-python scripts/preprocess_dataset.py
-```
-
-```bash
-# Option 3: Process subset first
-python -c "
+```python
 import pandas as pd
+
+# Cargar dataset completo
 df = pd.read_csv('data/metadata/kinase_labels.csv')
-df.head(100).to_csv('data/metadata/kinase_labels_small.csv', index=False)
-"
-python scripts/preprocess_dataset.py  # Will read the small one
+
+# Filtrar solo kinasas de interés
+df_filtered = df[df['kinase_name'].isin(['EGFR', 'BRAF', 'ABL1'])]
+
+# Guardar subset
+df_filtered.to_csv('data/metadata/kinase_labels_small.csv', index=False)
+
+# Crear splits del subset
+# ...
 ```
 
-### "PDB file not found" During Preprocessing
+## Debugging
 
-**Cause**: Download didn't complete or file got deleted.
-
-**Solution**:
-
-```bash
-# Verify download completed
-ls data/raw/pdbs/ | wc -l
-# Should be ~500
-
-# If fewer, re-download
-python scripts/download_klifs_dataset.py
-```
-
-### Missing Tensors After Preprocessing
-
-**Check**:
-
-```bash
-ls data/processed/ | wc -l
-# Should be ~500 (one directory per PDB)
-
-# If fewer, rerun preprocessing
-python scripts/preprocess_dataset.py
-```
-
----
-
-## Split Issues
-
-### Leakage Validation Failed
-
-**Error:**
-```
-ValueError: Leakage between TRAIN and VAL: {'EGFR'}
-```
-
-**This means**: The new grouped split strategy detected that you're using an OLD split CSV with overlapping kinases.
-
-**Solution**:
-
-```bash
-# Regenerate splits with grouped strategy
-rm data/splits/*.csv
-python scripts/download_klifs_dataset.py
-```
-
-### Imbalanced ACTIVE/INACTIVE Ratio
-
-With grouped splits, balance might not be perfect.
-
-**Example**:
-```
-Train: 70% active, 30% inactive
-Test:  50% active, 50% inactive  ← Different!
-```
-
-**This is OK.** Solution in training:
+### 1. Modo Verbose
 
 ```python
-# Use weighted loss
-from torch.nn import BCEWithLogitsLoss
+# En download_klifs_dataset.py
+logging.basicConfig(level=logging.DEBUG)
 
-# Calculate weights
-n_active = 343
-n_inactive = 180
-pos_weight = n_inactive / n_active
-
-loss_fn = BCEWithLogitsLoss(pos_weight=torch.tensor(pos_weight))
+# Verá TODOS los logs, incluyendo requests details
 ```
 
----
-
-## Training Issues
-
-### Test Accuracy Much Lower Than Train Accuracy
-
-**Example**:
-```
-Train Accuracy: 92%
-Val Accuracy:   88%
-Test Accuracy:  62%  ← Much lower!
-```
-
-**Is this bad?** No, this is EXPECTED and CORRECT.
-
-**Why?**
-- Train: Sees kinases EGFR, BRAF, ABL1, ...
-- Test: Sees kinases PDGFRA, FGFR1, ALK, ... (completely new)
-- Difference is real: model generalizes 62% to new kinases
-
-**This is NOT a bug**, it's **honest measurement**.
-
-### Model Not Converging
-
-**Symptoms**: Loss stays high, doesn't decrease
-
-**Solutions**:
+### 2. Guardar Logs
 
 ```python
-# 1. Check learning rate (might be too high)
-learning_rate = 1e-5  # Try smaller value
+# Agregar a requirements.txt
+pip install python-json-logger
 
-# 2. Check batch size (might be too large)
-batch_size = 16  # Try smaller
-
-# 3. Check for data issues
-# Run: python scripts/explore_dataset.py
-
-# 4. Add regularization
-model = YourModel(dropout=0.5)  # Higher dropout
-
-# 5. Reduce dataset to test
-# Use data/splits/train_small.csv for quick debugging
+# En scripts, guardar logs:
+handler = logging.FileHandler('pipeline.log')
+logger.addHandler(handler)
 ```
 
----
-
-## Data Validation
-
-### Validate Dataset Integrity
+### 3. Inspeccionar Datos
 
 ```python
+# Script para inspeccionar
+import pandas as pd
+
+df = pd.read_csv('data/metadata/kinase_labels.csv')
+
+# Ver ejemplos
+print(df.head())
+
+# Estadísticas
+print(df.describe())
+
+# Buscar valores nulos
+print(df.isnull().sum())
+
+# Valores únicos
+print(df['conformational_state'].unique())
+```
+
+## Performance
+
+### Monitoreo
+
+```bash
+# Monitor durante descarga
+watch -n 1 'ls data/raw/pdbs/ | wc -l'
+
+# Monitor de recursos
+# Windows: Task Manager
+# Linux: top, htop
+# Mac: Activity Monitor
+
+# Monitor con Python
+import psutil
+print(f"Memory: {psutil.virtual_memory().percent}%")
+print(f"Disk: {psutil.disk_usage('/').percent}%")
+```
+
+### Benchmarking
+
+```python
+import time
+
+# Medir tiempo de descarga
+start = time.time()
+downloader.download_all()
+elapsed = time.time() - start
+print(f"Descarga completada en {elapsed:.1f}s")
+
+# Medir tiempo de preprocessing
+start = time.time()
+preprocessor.run()
+elapsed = time.time() - start
+print(f"Preprocessing completado en {elapsed:.1f}s")
+```
+
+## Validación de Datos
+
+### Verificar Integridad
+
+```python
+# Script para validar
 from pathlib import Path
 import pandas as pd
 
 def validate_dataset():
-    """Check everything is OK."""
+    # Verificar CSV
+    df = pd.read_csv('data/metadata/kinase_labels.csv')
+    assert len(df) > 0, "CSV vacío"
+    assert not df.isnull().any().any(), "CSV con valores NULL"
     
-    # 1. Metadata exists
-    metadata_path = Path('data/metadata/kinase_labels.csv')
-    assert metadata_path.exists(), "No metadata CSV"
-    
-    df = pd.read_csv(metadata_path)
-    assert len(df) > 0, "Metadata is empty"
-    assert not df.isnull().any().any(), "Metadata has NULL values"
-    
-    # 2. PDB files exist
+    # Verificar archivos PDB
     for idx, row in df.iterrows():
         path = Path(row['filepath'])
-        assert path.exists(), f"PDB not found: {path}"
+        assert path.exists(), f"PDB no encontrado: {path}"
     
-    # 3. Splits exist
+    # Verificar splits
     for split in ['train', 'val', 'test']:
-        split_path = Path(f'data/splits/{split}.csv')
-        assert split_path.exists(), f"Split not found: {split}"
-        
-        split_df = pd.read_csv(split_path)
-        assert len(split_df) > 0, f"Split is empty: {split}"
-        
-        # Check no leakage
-        train_kinases = set(pd.read_csv('data/splits/train.csv')['kinase_name'].unique())
-        test_kinases = set(pd.read_csv('data/splits/test.csv')['kinase_name'].unique())
-        overlap = train_kinases & test_kinases
-        assert not overlap, f"Leakage detected: {overlap}"
+        path = Path(f'data/splits/{split}.csv')
+        assert path.exists(), f"Split no encontrado: {path}"
+        split_df = pd.read_csv(path)
+        assert len(split_df) > 0, f"Split vacío: {split}"
     
-    # 4. Tensors exist
-    processed_dir = Path('data/processed')
-    assert processed_dir.exists(), "No processed directory"
-    
-    num_tensors = len(list(processed_dir.glob('*/ca_coords.pt')))
-    print(f"✅ Found {num_tensors} tensor files")
-    
-    print("✅ Dataset validation passed!")
+    print("✅ Dataset validado exitosamente")
 
-# Run it
 validate_dataset()
 ```
 
----
+## Recuperación de Errores
 
-## Performance Optimization
-
-### Speed Up Preprocessing
+### Si se Interrumpe la Descarga
 
 ```python
-# In preprocess_dataset.py, increase batch size (if memory allows)
-batch_size = 64  # Instead of 32
+# 1. Verificar qué se descargó
+ls -la data/raw/pdbs/ | tail
 
-# Or use more workers
-DataLoader(dataset, num_workers=4, batch_size=32)
-```
-
-### Speed Up Training
-
-```python
-# Use mixed precision (if GPU supports it)
-from torch.cuda.amp import autocast
-
-with autocast():
-    loss = model(x)
-
-# Or use gradient accumulation
-accumulation_steps = 4
-for i, batch in enumerate(loader):
-    loss = model(batch)
-    loss.backward()
-    if (i + 1) % accumulation_steps == 0:
-        optimizer.step()
-        optimizer.zero_grad()
-```
-
----
-
-## Monitoring & Debugging
-
-### Enable Verbose Logging
-
-```python
-import logging
-
-# Set to DEBUG level
-logging.basicConfig(level=logging.DEBUG)
-
-# Now all logs will be printed
-python scripts/download_klifs_dataset.py
-```
-
-### Save Logs to File
-
-```python
-import logging
-
-handler = logging.FileHandler('pipeline.log')
-logger.addHandler(handler)
-
-# Logs will be saved in pipeline.log
-```
-
-### Monitor Disk Usage
-
-```bash
-# Check data folder sizes
-du -sh data/raw/pdbs/      # PDB files
-du -sh data/processed/     # Tensors
-du -sh figures/            # Plots
-
-# If low on space
-rm -rf data/processed/     # Can regenerate
-```
-
----
-
-## Recovery Procedures
-
-### If Download Was Interrupted
-
-```bash
-# 1. Check what was downloaded
-ls data/raw/pdbs/ | wc -l
-
-# 2. Find what's missing
-python -c "
+# 2. Crear lista de PDBs faltantes
 import pandas as pd
-import os
 
 all_df = pd.read_csv('data/metadata/kinase_labels.csv')
-downloaded = set(f.replace('.pdb', '').upper() for f in os.listdir('data/raw/pdbs'))
+downloaded = set([f.replace('.pdb', '').upper() for f in os.listdir('data/raw/pdbs')])
 
-missing_df = all_df[~all_df['pdb_id'].isin(downloaded)]
-print(f'Missing: {len(missing_df)} PDBs')
-missing_df.to_csv('data/missing_pdbs.csv', index=False)
-"
+missing = all_df[~all_df['pdb_id'].isin(downloaded)]
+print(f"Faltantes: {len(missing)} PDBs")
 
-# 3. Resume download (or start fresh)
-python scripts/download_klifs_dataset.py
+# 3. Reintentar solo los faltantes
+# O simplemente correr downloader.download_all() nuevamente
+# - ignorará archivos ya descargados
 ```
 
-### If Preprocessing Was Interrupted
+### Si se Interrumpe el Preprocessing
+
+```python
+# 1. Ver qué se procesó
+ls data/processed/
+
+# 2. Continuar desde donde paró
+# Script modificado:
+
+processed = set(os.listdir('data/processed'))
+for idx, row in df.iterrows():
+    if row['pdb_id'] not in processed:
+        # Procesar este
+        ...
+```
+
+## Almacenamiento
+
+### Gestión de Espacio
 
 ```bash
-# 1. Check what was processed
-ls data/processed/ | wc -l
+# Ver tamaño de directorios
+du -sh data/raw/pdbs/
+du -sh data/processed/
+du -sh figures/
 
-# 2. Modify preprocessing to skip completed
-# preprocess_dataset.py already does this
-
-# 3. Resume
-python scripts/preprocess_dataset.py
+# Si necesitas liberar espacio
+rm -rf figures/
+rm -rf data/processed/  # Puede regenerarse
 ```
 
+### Backup
+
+```bash
+# Backup solo de metadata (lo importante)
+cp data/metadata/kinase_labels.csv kinase_labels_backup.csv
+cp data/splits/*.csv splits_backup/
+
+# Si necesitas recuperar PDBs descargados
+# Usa KLIFS API nuevamente
+```
+
+## Tips Generales
+
+### ✅ Lo que Funciona Bien
+
+- Procesar EGFR primero (muchas estructuras, descarga rápida)
+- Usar batch_size=32 (buen balance memoria/velocidad)
+- Validar con pequeño subset antes de correr completo
+
+### ❌ Lo que NO hacer
+
+- No eliminar `data/raw/pdbs/` - toma tiempo descargar
+- No cambiar estructura de `data/splits/` sin entender consecuencias
+- No usar valores muy altos de batch_size sin GPU potente
+
+### 🔍 Debugging Tips
+
+```bash
+# Ver primeras líneas de logs
+head -20 pipeline.log
+
+# Ver últimas líneas
+tail -50 pipeline.log
+
+# Buscar errores
+grep -i "error" pipeline.log
+
+# Contar eventos
+grep -c "Downloaded" pipeline.log
+```
+
+## Contacto/Soporte
+
+Si encuentras un error:
+
+1. **Verifica KLIFS está online**: https://klifs.net
+2. **Valida tu setup**: `make validate`
+3. **Lee los logs**: revisa salida de los scripts
+4. **Prueba subset pequeño**: filtra solo una kinasa para testear
+5. **Reporta issue** con logs relevantes
+
 ---
 
-## FAQ
-
-**Q: Can I use the pipeline with only a few kinases?**  
-A: Yes! Edit `config.yaml` under `kinases:` section.
-
-**Q: How long does download take?**  
-A: 30-60 minutes depending on internet speed. KLIFS API is rate-limited.
-
-**Q: Can I download only ACTIVE structures?**  
-A: Edit `scripts/download_klifs_dataset.py` and filter by `conformational_state`.
-
-**Q: Do I need GPU?**  
-A: No for download/preprocess. Yes for training (but can use CPU, slower).
-
-**Q: Can I use a different dataset instead of KLIFS?**  
-A: Yes, adapt `scripts/download_klifs_dataset.py` to your data format.
-
----
-
-## Getting Help
-
-1. **Check this file first** - you're probably looking for the solution here
-2. **Run validation**: `python scripts/validate_setup.py`
-3. **Check logs**: Look at terminal output and any `.log` files
-4. **Search KLIFS status**: https://klifs.net might have issues
-5. **Try small dataset first**: Test with 1-2 kinases before full run
-
----
-
-**Last updated**: 2026-05-25
+**Última actualización:** 2025-05-25

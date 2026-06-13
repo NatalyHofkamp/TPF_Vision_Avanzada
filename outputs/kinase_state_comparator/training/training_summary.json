@@ -1,0 +1,16 @@
+{
+  "total_structures": 863,
+  "training_structures": 690,
+  "validation_structures": 173,
+  "requested_epochs": 100,
+  "epochs_executed": 64,
+  "best_epoch": 44,
+  "training_loss": 0.10834475606679916,
+  "validation_loss": 0.21289889514446259,
+  "training_accuracy": 0.9652173913043478,
+  "validation_accuracy": 0.9421965317919075,
+  "training_balanced_accuracy": 0.9650252525252525,
+  "validation_balanced_accuracy": 0.9416331994645248,
+  "validation_roc_auc": 0.9693440428380187,
+  "device": "cpu"
+}

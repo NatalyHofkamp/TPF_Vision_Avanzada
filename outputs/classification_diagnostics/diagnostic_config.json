@@ -1,0 +1,36 @@
+{
+  "real_structures_only": true,
+  "generated_structures_used": false,
+  "num_valid_structures": 863,
+  "representations": {
+    "ca_coordinates": [
+      863,
+      192
+    ],
+    "distance_matrix": [
+      863,
+      2016
+    ],
+    "coordinates_distances": [
+      863,
+      2208
+    ],
+    "local_geometry": [
+      863,
+      26
+    ],
+    "dfg_only": [
+      863,
+      6
+    ],
+    "alphac_only": [
+      863,
+      5
+    ],
+    "dfg_alphac": [
+      863,
+      10
+    ]
+  },
+  "deep_epochs": 60
+}
