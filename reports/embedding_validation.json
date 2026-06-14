@@ -1,0 +1,10 @@
+{
+  "valid": true,
+  "total_manifest_rows": 1777,
+  "unique_sequences": 787,
+  "checked_embedding_files": 787,
+  "embedding_dimensions": [
+    1280
+  ],
+  "issues": []
+}

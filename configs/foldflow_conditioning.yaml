@@ -1,0 +1,27 @@
+foldflow:
+  repository: https://github.com/DreamFold/FoldFlow
+  revision: 9d2c260813da3c9a2bc944973953f63ea6d71203
+  source_root: third_party/foldflow_official
+  checkpoint: checkpoints/foldflow/foldflow-sfm.pth
+  variant: sfm
+  freeze_backbone: true
+
+conditioning:
+  esm_input_dim: 1280
+  foldflow_node_dim: 256
+  dropout: 0.0
+  cfg_dropout_probability: 0.2
+  guidance_scale: 2.0
+
+translation_dataset:
+  folds_dir: data/folds
+  manifest: data/esm_manifest.csv
+  metadata: data/metadata/kinase_labels.csv
+  min_sequence_identity: 0.7
+  batch_size: 1
+  num_workers: 0
+
+paths:
+  conditioning_checkpoints: checkpoints/kinase_conditioning
+  logs: outputs/logs/foldflow_conditioning
+  integration_report: reports/foldflow_integration_report.json

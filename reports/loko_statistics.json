@@ -1,0 +1,707 @@
+{
+  "number_of_folds": 13,
+  "folds": [
+    {
+      "fold_id": 1,
+      "kinase_assignments": {
+        "train": [
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "BRAF",
+        "test": "EGFR"
+      },
+      "train": {
+        "structures": 969,
+        "active": 553,
+        "inactive": 416,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "ALK",
+          "CDK4",
+          "CDK6",
+          "ERBB2",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 243,
+        "active": 58,
+        "inactive": 185,
+        "kinases": [
+          "BRAF"
+        ]
+      },
+      "test": {
+        "structures": 565,
+        "active": 221,
+        "inactive": 344,
+        "kinases": [
+          "EGFR"
+        ]
+      }
+    },
+    {
+      "fold_id": 2,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "ABL1",
+        "test": "BRAF"
+      },
+      "train": {
+        "structures": 1376,
+        "active": 739,
+        "inactive": 637,
+        "kinases": [
+          "AKT1",
+          "ALK",
+          "CDK4",
+          "CDK6",
+          "EGFR",
+          "ERBB2",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 158,
+        "active": 35,
+        "inactive": 123,
+        "kinases": [
+          "ABL1"
+        ]
+      },
+      "test": {
+        "structures": 243,
+        "active": 58,
+        "inactive": 185,
+        "kinases": [
+          "BRAF"
+        ]
+      }
+    },
+    {
+      "fold_id": 3,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "MET",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "FGFR1",
+        "test": "ABL1"
+      },
+      "train": {
+        "structures": 1402,
+        "active": 586,
+        "inactive": 816,
+        "kinases": [
+          "AKT1",
+          "ALK",
+          "BRAF",
+          "CDK4",
+          "CDK6",
+          "EGFR",
+          "ERBB2",
+          "KIT",
+          "MET",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 217,
+        "active": 211,
+        "inactive": 6,
+        "kinases": [
+          "FGFR1"
+        ]
+      },
+      "test": {
+        "structures": 158,
+        "active": 35,
+        "inactive": 123,
+        "kinases": [
+          "ABL1"
+        ]
+      }
+    },
+    {
+      "fold_id": 4,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "MET",
+        "test": "FGFR1"
+      },
+      "train": {
+        "structures": 1395,
+        "active": 612,
+        "inactive": 783,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "ALK",
+          "BRAF",
+          "CDK4",
+          "CDK6",
+          "EGFR",
+          "ERBB2",
+          "KIT",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 165,
+        "active": 9,
+        "inactive": 156,
+        "kinases": [
+          "MET"
+        ]
+      },
+      "test": {
+        "structures": 217,
+        "active": 211,
+        "inactive": 6,
+        "kinases": [
+          "FGFR1"
+        ]
+      }
+    },
+    {
+      "fold_id": 5,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "KIT",
+        "test": "MET"
+      },
+      "train": {
+        "structures": 1543,
+        "active": 805,
+        "inactive": 738,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "ALK",
+          "BRAF",
+          "CDK4",
+          "CDK6",
+          "EGFR",
+          "ERBB2",
+          "FGFR1",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 69,
+        "active": 18,
+        "inactive": 51,
+        "kinases": [
+          "KIT"
+        ]
+      },
+      "test": {
+        "structures": 165,
+        "active": 9,
+        "inactive": 156,
+        "kinases": [
+          "MET"
+        ]
+      }
+    },
+    {
+      "fold_id": 6,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "ALK",
+        "test": "KIT"
+      },
+      "train": {
+        "structures": 1613,
+        "active": 723,
+        "inactive": 890,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "BRAF",
+          "CDK4",
+          "CDK6",
+          "EGFR",
+          "ERBB2",
+          "FGFR1",
+          "MET",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 95,
+        "active": 91,
+        "inactive": 4,
+        "kinases": [
+          "ALK"
+        ]
+      },
+      "test": {
+        "structures": 69,
+        "active": 18,
+        "inactive": 51,
+        "kinases": [
+          "KIT"
+        ]
+      }
+    },
+    {
+      "fold_id": 7,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "AKT1",
+          "CDK4",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "PIK3CA",
+        "test": "ALK"
+      },
+      "train": {
+        "structures": 1546,
+        "active": 609,
+        "inactive": 937,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "BRAF",
+          "CDK4",
+          "CDK6",
+          "EGFR",
+          "ERBB2",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PDGFRA"
+        ]
+      },
+      "validation": {
+        "structures": 136,
+        "active": 132,
+        "inactive": 4,
+        "kinases": [
+          "PIK3CA"
+        ]
+      },
+      "test": {
+        "structures": 95,
+        "active": 91,
+        "inactive": 4,
+        "kinases": [
+          "ALK"
+        ]
+      }
+    },
+    {
+      "fold_id": 8,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "ALK",
+          "CDK4",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "AKT1",
+        "test": "PIK3CA"
+      },
+      "train": {
+        "structures": 1579,
+        "active": 662,
+        "inactive": 917,
+        "kinases": [
+          "ABL1",
+          "ALK",
+          "BRAF",
+          "CDK4",
+          "CDK6",
+          "EGFR",
+          "ERBB2",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PDGFRA"
+        ]
+      },
+      "validation": {
+        "structures": 62,
+        "active": 38,
+        "inactive": 24,
+        "kinases": [
+          "AKT1"
+        ]
+      },
+      "test": {
+        "structures": 136,
+        "active": 132,
+        "inactive": 4,
+        "kinases": [
+          "PIK3CA"
+        ]
+      }
+    },
+    {
+      "fold_id": 9,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "CDK6",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "CDK4",
+        "test": "AKT1"
+      },
+      "train": {
+        "structures": 1698,
+        "active": 791,
+        "inactive": 907,
+        "kinases": [
+          "ABL1",
+          "ALK",
+          "BRAF",
+          "CDK6",
+          "EGFR",
+          "ERBB2",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 17,
+        "active": 3,
+        "inactive": 14,
+        "kinases": [
+          "CDK4"
+        ]
+      },
+      "test": {
+        "structures": 62,
+        "active": 38,
+        "inactive": 24,
+        "kinases": [
+          "AKT1"
+        ]
+      }
+    },
+    {
+      "fold_id": 10,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "PDGFRA",
+          "ERBB2"
+        ],
+        "validation": "CDK6",
+        "test": "CDK4"
+      },
+      "train": {
+        "structures": 1739,
+        "active": 824,
+        "inactive": 915,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "ALK",
+          "BRAF",
+          "EGFR",
+          "ERBB2",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 21,
+        "active": 5,
+        "inactive": 16,
+        "kinases": [
+          "CDK6"
+        ]
+      },
+      "test": {
+        "structures": 17,
+        "active": 3,
+        "inactive": 14,
+        "kinases": [
+          "CDK4"
+        ]
+      }
+    },
+    {
+      "fold_id": 11,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "ERBB2"
+        ],
+        "validation": "PDGFRA",
+        "test": "CDK6"
+      },
+      "train": {
+        "structures": 1741,
+        "active": 824,
+        "inactive": 917,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "ALK",
+          "BRAF",
+          "CDK4",
+          "EGFR",
+          "ERBB2",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 15,
+        "active": 3,
+        "inactive": 12,
+        "kinases": [
+          "PDGFRA"
+        ]
+      },
+      "test": {
+        "structures": 21,
+        "active": 5,
+        "inactive": 16,
+        "kinases": [
+          "CDK6"
+        ]
+      }
+    },
+    {
+      "fold_id": 12,
+      "kinase_assignments": {
+        "train": [
+          "EGFR",
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "CDK6"
+        ],
+        "validation": "ERBB2",
+        "test": "PDGFRA"
+      },
+      "train": {
+        "structures": 1748,
+        "active": 821,
+        "inactive": 927,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "ALK",
+          "BRAF",
+          "CDK4",
+          "CDK6",
+          "EGFR",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 14,
+        "active": 8,
+        "inactive": 6,
+        "kinases": [
+          "ERBB2"
+        ]
+      },
+      "test": {
+        "structures": 15,
+        "active": 3,
+        "inactive": 12,
+        "kinases": [
+          "PDGFRA"
+        ]
+      }
+    },
+    {
+      "fold_id": 13,
+      "kinase_assignments": {
+        "train": [
+          "BRAF",
+          "ABL1",
+          "FGFR1",
+          "MET",
+          "KIT",
+          "ALK",
+          "PIK3CA",
+          "AKT1",
+          "CDK4",
+          "CDK6",
+          "PDGFRA"
+        ],
+        "validation": "EGFR",
+        "test": "ERBB2"
+      },
+      "train": {
+        "structures": 1198,
+        "active": 603,
+        "inactive": 595,
+        "kinases": [
+          "ABL1",
+          "AKT1",
+          "ALK",
+          "BRAF",
+          "CDK4",
+          "CDK6",
+          "FGFR1",
+          "KIT",
+          "MET",
+          "PDGFRA",
+          "PIK3CA"
+        ]
+      },
+      "validation": {
+        "structures": 565,
+        "active": 221,
+        "inactive": 344,
+        "kinases": [
+          "EGFR"
+        ]
+      },
+      "test": {
+        "structures": 14,
+        "active": 8,
+        "inactive": 6,
+        "kinases": [
+          "ERBB2"
+        ]
+      }
+    }
+  ]
+}

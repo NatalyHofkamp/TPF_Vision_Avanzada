@@ -1,4 +1,4 @@
-numpy
+numpy<2
 pandas
 torch
 torchvision
@@ -17,6 +17,18 @@ biotite
 einops
 omegaconf
 hydra-core
+antlr4-python3-runtime==4.9.3
 wandb
 fair-esm
+transformers
+umap-learn
 requests
+ipdb
+POT
+dm-tree
+lmdb
+torchdiffeq
+torchsde
+geoopt
+geomstats==2.8.0
+ml-collections

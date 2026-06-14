@@ -1,0 +1,690 @@
+{
+  "aggregation": "mean pooled ESM embedding over manifest structures per kinase",
+  "nearest_neighbors": {
+    "ABL1": [
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.9877548217773438
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9877414703369141
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.9874648451805115
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.9853335618972778
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.9545462727546692
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.9510331749916077
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.9277998805046082
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.9183651804924011
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.9141557812690735
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.8274766802787781
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.715036928653717
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.6403850317001343
+      }
+    ],
+    "AKT1": [
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9275121688842773
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.9270710945129395
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.918244481086731
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9141557812690735
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.911280632019043
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.9111891388893127
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.9050227403640747
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.9005764722824097
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.89105224609375
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.8678009510040283
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.8140817284584045
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.7589833736419678
+      }
+    ],
+    "ALK": [
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.9397249221801758
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.9134223461151123
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.9005574584007263
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.89105224609375
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.8571519255638123
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.8399111032485962
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.8314864039421082
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.8274766802787781
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.8165504932403564
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.7528496980667114
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.7510043978691101
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.7343824505805969
+      }
+    ],
+    "BRAF": [
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9422867298126221
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.9374439716339111
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.9284981489181519
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9277998805046082
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.9270710945129395
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.9266977310180664
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.9005574584007263
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.8914942741394043
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.8839186429977417
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.8636021018028259
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.8452718257904053
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.7905890941619873
+      }
+    ],
+    "CDK4": [
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.9945098161697388
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.9564687609672546
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.9531574249267578
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9510331749916077
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.9508094191551208
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9453174471855164
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.9357136487960815
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.9005764722824097
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.8839186429977417
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.7528496980667114
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.6197078227996826
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.5489976406097412
+      }
+    ],
+    "CDK6": [
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.9945098161697388
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.9633914232254028
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.957948625087738
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.9573447704315186
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9545462727546692
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9494400024414062
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.9421298503875732
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.9050227403640747
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.8914942741394043
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.7510043978691101
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.6224286556243896
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.5467900633811951
+      }
+    ],
+    "EGFR": [
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.9863025546073914
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.9397249221801758
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.8452718257904053
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.8140817284584045
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.7503483891487122
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.7250959873199463
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.7166934609413147
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.715036928653717
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.7009202241897583
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.6224286556243896
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.6197078227996826
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.6099861860275269
+      }
+    ],
+    "ERBB2": [
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.9863025546073914
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.9134223461151123
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.7905890941619873
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.7589833736419678
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.6816974878311157
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.6530125141143799
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.6403850317001343
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.6399388313293457
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.6220384240150452
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.5489976406097412
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.5467900633811951
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.5203226804733276
+      }
+    ],
+    "FGFR1": [
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.9885207414627075
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9877414703369141
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.9869198799133301
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.9867788553237915
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.9494400024414062
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.9453174471855164
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.9422867298126221
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.9275121688842773
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.9165285229682922
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.8571519255638123
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.7503483891487122
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.6816974878311157
+      }
+    ],
+    "KIT": [
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.9962592720985413
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.9895585775375366
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9885207414627075
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9874648451805115
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.9633914232254028
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.9564687609672546
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.939235270023346
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.9266977310180664
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.9111891388893127
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.8165504932403564
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.7009202241897583
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.6220384240150452
+      }
+    ],
+    "MET": [
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.990239143371582
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.9895585775375366
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9877548217773438
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9867788553237915
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.957948625087738
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.9531574249267578
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.9374439716339111
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.9293043613433838
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.918244481086731
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.8399111032485962
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.7250959873199463
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.6530125141143799
+      }
+    ],
+    "PDGFRA": [
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.9962592720985413
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.990239143371582
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9869198799133301
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9853335618972778
+      },
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.9573447704315186
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.9508094191551208
+      },
+      {
+        "kinase": "PIK3CA",
+        "cosine_similarity": 0.9359829425811768
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.9284981489181519
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.911280632019043
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.8314864039421082
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.7166934609413147
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.6399388313293457
+      }
+    ],
+    "PIK3CA": [
+      {
+        "kinase": "CDK6",
+        "cosine_similarity": 0.9421298503875732
+      },
+      {
+        "kinase": "KIT",
+        "cosine_similarity": 0.939235270023346
+      },
+      {
+        "kinase": "PDGFRA",
+        "cosine_similarity": 0.9359829425811768
+      },
+      {
+        "kinase": "CDK4",
+        "cosine_similarity": 0.9357136487960815
+      },
+      {
+        "kinase": "MET",
+        "cosine_similarity": 0.9293043613433838
+      },
+      {
+        "kinase": "ABL1",
+        "cosine_similarity": 0.9183651804924011
+      },
+      {
+        "kinase": "FGFR1",
+        "cosine_similarity": 0.9165285229682922
+      },
+      {
+        "kinase": "AKT1",
+        "cosine_similarity": 0.8678009510040283
+      },
+      {
+        "kinase": "BRAF",
+        "cosine_similarity": 0.8636021018028259
+      },
+      {
+        "kinase": "ALK",
+        "cosine_similarity": 0.7343824505805969
+      },
+      {
+        "kinase": "EGFR",
+        "cosine_similarity": 0.6099861860275269
+      },
+      {
+        "kinase": "ERBB2",
+        "cosine_similarity": 0.5203226804733276
+      }
+    ]
+  },
+  "expected_pair_evaluation": [
+    {
+      "pair": [
+        "EGFR",
+        "ERBB2"
+      ],
+      "available": true,
+      "cosine_similarity": 0.9863025546073914,
+      "EGFR_neighbor_rank": 1,
+      "ERBB2_neighbor_rank": 1,
+      "mutual_top_3": true
+    },
+    {
+      "pair": [
+        "FGFR1",
+        "PDGFRA"
+      ],
+      "available": true,
+      "cosine_similarity": 0.9869198799133301,
+      "FGFR1_neighbor_rank": 3,
+      "PDGFRA_neighbor_rank": 3,
+      "mutual_top_3": true
+    },
+    {
+      "pair": [
+        "CDK4",
+        "CDK6"
+      ],
+      "available": true,
+      "cosine_similarity": 0.9945098161697388,
+      "CDK4_neighbor_rank": 1,
+      "CDK6_neighbor_rank": 1,
+      "mutual_top_3": true
+    }
+  ]
+}

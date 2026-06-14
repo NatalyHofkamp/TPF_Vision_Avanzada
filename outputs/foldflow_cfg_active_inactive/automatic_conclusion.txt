@@ -1,1 +1,0 @@
-Conclusión: no hay evidencia suficiente para afirmar que el modelo aprendió la traducción activo ↔ inactivo en ambas direcciones. Direcciones que no pasan el criterio: ['active_to_inactive', 'inactive_to_active'].

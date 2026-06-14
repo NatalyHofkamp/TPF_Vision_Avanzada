@@ -1,0 +1,125 @@
+{
+  "official_repository": "https://github.com/DreamFold/FoldFlow",
+  "official_revision": "9d2c260813da3c9a2bc944973953f63ea6d71203",
+  "checkpoint": {
+    "path": "checkpoints/foldflow/foldflow-sfm.pth",
+    "loaded": true,
+    "sha256": "d1dc0328c1b9d8b8f8900e3e41e2f8d43886eff5e9fab4a2a611a671708085f7",
+    "variant": "foldflow-sfm"
+  },
+  "parameter_count": {
+    "official_backbone": 17446190,
+    "conditioning_adapter": 400640,
+    "official_backbone_frozen": true
+  },
+  "conditioning_dimensions": {
+    "esm_input": 1280,
+    "foldflow_node": 256,
+    "kinase": 256,
+    "state": 256
+  },
+  "fold_validation": [
+    {
+      "valid": true,
+      "fold_id": 1,
+      "split": "train",
+      "fold_kinases": [
+        "ABL1",
+        "AKT1",
+        "ALK",
+        "CDK4",
+        "CDK6",
+        "ERBB2",
+        "FGFR1",
+        "KIT",
+        "MET",
+        "PDGFRA",
+        "PIK3CA"
+      ],
+      "paired_kinases": [
+        "ABL1",
+        "AKT1",
+        "ALK",
+        "CDK4",
+        "CDK6",
+        "ERBB2",
+        "FGFR1",
+        "KIT",
+        "MET",
+        "PDGFRA",
+        "PIK3CA"
+      ],
+      "number_of_pairs": 215,
+      "excluded_pairs": 4
+    },
+    {
+      "valid": true,
+      "fold_id": 1,
+      "split": "validation",
+      "fold_kinases": [
+        "BRAF"
+      ],
+      "paired_kinases": [
+        "BRAF"
+      ],
+      "number_of_pairs": 90,
+      "excluded_pairs": 0
+    },
+    {
+      "valid": true,
+      "fold_id": 1,
+      "split": "test",
+      "fold_kinases": [
+        "EGFR"
+      ],
+      "paired_kinases": [
+        "EGFR"
+      ],
+      "number_of_pairs": 101,
+      "excluded_pairs": 7
+    }
+  ],
+  "sample_validation": {
+    "kinase": "EGFR",
+    "source_pdb_id": "1xkk",
+    "target_pdb_id": "4zau",
+    "aligned_residues": 272,
+    "sequence_identity": 0.9889705882352942,
+    "source_visible_in_both_cfg_branches": true,
+    "protein_identity_visible_in_both_cfg_branches": true
+  },
+  "cfg_validation": {
+    "guidance_scale": 2.0,
+    "formula_checks": {
+      "rot_vectorfield": true,
+      "trans_vectorfield": true
+    },
+    "conditional_unconditional_mean_difference": 0.14673568308353424,
+    "only_target_state_dropped": true,
+    "valid": true
+  },
+  "output_shapes": {
+    "rot_vectorfield": [
+      1,
+      272,
+      3,
+      3
+    ],
+    "trans_vectorfield": [
+      1,
+      272,
+      3
+    ],
+    "rigids": [
+      1,
+      272,
+      7
+    ],
+    "atom37": [
+      1,
+      272,
+      37,
+      3
+    ]
+  }
+}

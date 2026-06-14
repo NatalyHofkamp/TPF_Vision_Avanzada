@@ -13,6 +13,18 @@ explore-dataset:
 preprocess:
 	python3 scripts/preprocess_dataset.py
 
+esm-loko:
+	python3 scripts/build_esm_loko.py
+
+install-foldflow:
+	./scripts/install_foldflow.sh
+
+download-foldflow:
+	./scripts/download_foldflow.sh sfm
+
+validate-foldflow:
+	GEOMSTATS_BACKEND=pytorch python3 scripts/validate_foldflow_integration.py
+
 train:
 	python3 training/finetune.py
 
@@ -25,4 +37,4 @@ visualize:
 # Pipeline completo
 pipeline: validate download-dataset explore-dataset preprocess
 
-.PHONY: install validate download-dataset explore-dataset preprocess train evaluate visualize pipeline
+.PHONY: install validate download-dataset explore-dataset preprocess esm-loko install-foldflow download-foldflow validate-foldflow train evaluate visualize pipeline

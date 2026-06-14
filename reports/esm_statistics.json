@@ -1,0 +1,9 @@
+{
+  "total_proteins": 1777,
+  "unique_sequences": 787,
+  "average_length": 340.78446820483964,
+  "min_length": 209,
+  "max_length": 1205,
+  "embedding_dimension": 1280,
+  "number_of_cached_embeddings": 787
+}

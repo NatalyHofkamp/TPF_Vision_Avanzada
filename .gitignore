@@ -64,3 +64,7 @@ logs/
 # VSCode
 # ======================================
 .vscode/
+
+# External official FoldFlow source and release checkpoints
+third_party/foldflow_official/
+checkpoints/foldflow/
