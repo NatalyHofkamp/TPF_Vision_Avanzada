@@ -1,0 +1,22 @@
+{
+  "0.0": {
+    "average_vectorfield_magnitude": 4.08743794713752,
+    "average_prediction_difference": 0.30110195685227625,
+    "batches": 90
+  },
+  "1.0": {
+    "average_vectorfield_magnitude": 4.11427994786492,
+    "average_prediction_difference": 0.30110195685227625,
+    "batches": 90
+  },
+  "3.0": {
+    "average_vectorfield_magnitude": 4.551417806219408,
+    "average_prediction_difference": 0.30110195685227625,
+    "batches": 90
+  },
+  "5.0": {
+    "average_vectorfield_magnitude": 5.263611712218732,
+    "average_prediction_difference": 0.30110195685227625,
+    "batches": 90
+  }
+}

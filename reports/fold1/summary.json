@@ -1,0 +1,17 @@
+{
+  "fold_id": 1,
+  "train_size": 215,
+  "validation_size": 90,
+  "test_size": 101,
+  "best_validation_loss": 306.8886547523389,
+  "final_training_loss": 369.14581158125344,
+  "total_epochs": 1,
+  "conditioning_parameter_count": 400640,
+  "FoldFlow_parameter_count": 17446190,
+  "checkpoint_path": "checkpoints/fold1/best_validation.pt",
+  "last_checkpoint_path": "checkpoints/fold1/last.pt",
+  "metrics_csv": "reports/fold1/training_metrics.csv",
+  "cfg_diagnostics_path": "reports/fold1/cfg_diagnostics.json",
+  "example_prediction_path": "reports/fold1/example_prediction.pt",
+  "best_epoch": 1
+}

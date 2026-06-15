@@ -28,6 +28,12 @@ validate-foldflow:
 train:
 	python3 training/finetune.py
 
+train-fold1:
+	GEOMSTATS_BACKEND=pytorch python3 train_single_fold.py
+
+visualize-fold1:
+	python3 visualize_fold1_prediction.py
+
 evaluate:
 	python3 evaluation/evaluate.py
 
@@ -37,4 +43,4 @@ visualize:
 # Pipeline completo
 pipeline: validate download-dataset explore-dataset preprocess
 
-.PHONY: install validate download-dataset explore-dataset preprocess esm-loko install-foldflow download-foldflow validate-foldflow train evaluate visualize pipeline
+.PHONY: install validate download-dataset explore-dataset preprocess esm-loko install-foldflow download-foldflow validate-foldflow train train-fold1 visualize-fold1 evaluate visualize pipeline
