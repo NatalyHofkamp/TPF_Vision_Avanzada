@@ -1,0 +1,4 @@
+baseline,mean_rmsd_source_target,mean_rmsd_prediction_target,mean_rmsd_improvement,successful_translation_rate
+identity,3.3161415052478542,3.3161415052478542,0.0,0.0
+foldflow_conditional,3.2255202291623704,16.70613709775792,-13.48061686859555,0.0
+foldflow_unconditional,3.2255202291623704,16.533695902453953,-13.308175673291583,0.0
