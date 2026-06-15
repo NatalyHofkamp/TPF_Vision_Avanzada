@@ -1,0 +1,2 @@
+epoch,train_total_loss,train_rotation_loss,train_translation_loss,validation_total_loss,validation_rotation_loss,validation_translation_loss
+1,366.3459757250409,2.5032901680746744,363.842685291379,302.52068413628473,1.9217451863818698,300.59893900553385

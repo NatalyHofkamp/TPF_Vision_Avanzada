@@ -1,0 +1,10 @@
+{
+  "number_of_samples": 101,
+  "mean_rmsd_source_target": 3.3161415052478542,
+  "mean_rmsd_prediction_target": 17.074147639004735,
+  "mean_rmsd_improvement": -13.758006133756883,
+  "median_rmsd_improvement": -13.765871729876192,
+  "successful_translation_rate": 0.0,
+  "successful_translations": 0,
+  "median_sample_index": 50
+}

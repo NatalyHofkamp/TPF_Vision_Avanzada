@@ -1,0 +1,199 @@
+{
+  "device": "cpu",
+  "recommended_num_workers": 2,
+  "backbone_trainability": {
+    "backbone_requires_grad": [],
+    "conditioning_requires_grad": [
+      "esm.network.0.weight",
+      "esm.network.0.bias",
+      "esm.network.1.weight",
+      "esm.network.1.bias",
+      "esm.network.4.weight",
+      "esm.network.4.bias",
+      "kinase.embedding.weight",
+      "state.embedding.weight",
+      "output_norm.weight",
+      "output_norm.bias"
+    ],
+    "backbone_trainable_count": 0,
+    "conditioning_trainable_count": 10,
+    "official_backbone_frozen": true
+  },
+  "amp_off": {
+    "use_amp_requested": false,
+    "use_amp_effective": false,
+    "device": "cpu",
+    "gpu_memory_mb": 0.0,
+    "train_size": 215,
+    "validation_size": 90,
+    "test_size": 101,
+    "train_metrics": {
+      "total_loss": 356.84187700138534,
+      "rotation_loss": 2.4173119683598365,
+      "translation_loss": 354.42456455674284
+    },
+    "validation_metrics": {
+      "total_loss": 305.9261939154731,
+      "rotation_loss": 2.4231116851170857,
+      "translation_loss": 303.5030822753906
+    },
+    "train_timing": {
+      "dataloader_seconds": 0.021509351734976218,
+      "prepare_batch_seconds": 0.007074021339974214,
+      "cpu_tensor_views_seconds": 1.1850051043100309e-05,
+      "flow_marginal_seconds": 0.006941294953833486,
+      "device_transfer_seconds": 4.795384200744677e-05,
+      "forward_seconds": 0.7245210436411705,
+      "backward_seconds": 0.679251148432986,
+      "optimizer_step_seconds": 0.0019804430275419077,
+      "batch_seconds": 1.4108723312093834,
+      "epoch_total_seconds": 307.9620618330373,
+      "average_batch_total_seconds": 1.4323816829443594,
+      "batch_count": 215,
+      "dataloader_fraction": 0.015016494549666581,
+      "prepare_fraction": 0.004938642698525071,
+      "cpu_tensor_views_fraction": 8.272970245431867e-06,
+      "flow_marginal_fraction": 0.004845981372482489,
+      "device_transfer_fraction": 3.347839656038769e-05,
+      "forward_fraction": 0.5058156301970209,
+      "backward_fraction": 0.4742109987309655,
+      "optimizer_step_fraction": 0.0013826224190964032
+    },
+    "validation_timing": {
+      "dataloader_seconds": 0.019095042634257375,
+      "prepare_batch_seconds": 0.0072706763891296254,
+      "cpu_tensor_views_seconds": 1.0828211250352777e-05,
+      "flow_marginal_seconds": 0.007086007355246693,
+      "device_transfer_seconds": 3.235321200918406e-05,
+      "forward_seconds": 0.4112580657221972,
+      "backward_seconds": 0.0,
+      "optimizer_step_seconds": 0.0,
+      "batch_seconds": 0.41854717127862384,
+      "epoch_total_seconds": 39.38779925215931,
+      "average_batch_total_seconds": 0.4376422139128812,
+      "batch_count": 90,
+      "dataloader_fraction": 0.04363162882193651,
+      "prepare_fraction": 0.016613288567672208,
+      "cpu_tensor_views_fraction": 2.474215444972656e-05,
+      "flow_marginal_fraction": 0.016191325082404555,
+      "device_transfer_fraction": 7.392616841030883e-05,
+      "forward_fraction": 0.9397129724877588,
+      "backward_fraction": 0.0,
+      "optimizer_step_fraction": 0.0
+    },
+    "average_batch_time_seconds": 1.4108723312093834,
+    "total_epoch_time_seconds": 303.3375512100174,
+    "trainability": {
+      "backbone_requires_grad": [],
+      "conditioning_requires_grad": [
+        "esm.network.0.weight",
+        "esm.network.0.bias",
+        "esm.network.1.weight",
+        "esm.network.1.bias",
+        "esm.network.4.weight",
+        "esm.network.4.bias",
+        "kinase.embedding.weight",
+        "state.embedding.weight",
+        "output_norm.weight",
+        "output_norm.bias"
+      ],
+      "backbone_trainable_count": 0,
+      "conditioning_trainable_count": 10,
+      "official_backbone_frozen": true
+    },
+    "train_metrics_csv": "reports/fold1/performance_audit/training_metrics_amp_0.csv"
+  },
+  "amp_on": {
+    "use_amp_requested": true,
+    "use_amp_effective": false,
+    "device": "cpu",
+    "gpu_memory_mb": 0.0,
+    "train_size": 215,
+    "validation_size": 90,
+    "test_size": 101,
+    "train_metrics": {
+      "total_loss": 366.3459757250409,
+      "rotation_loss": 2.5032901680746744,
+      "translation_loss": 363.842685291379
+    },
+    "validation_metrics": {
+      "total_loss": 302.52068413628473,
+      "rotation_loss": 1.9217451863818698,
+      "translation_loss": 300.59893900553385
+    },
+    "train_timing": {
+      "dataloader_seconds": 0.020889495539094517,
+      "prepare_batch_seconds": 0.007033873427737786,
+      "cpu_tensor_views_seconds": 1.1531214113347232e-05,
+      "flow_marginal_seconds": 0.006910717860676435,
+      "device_transfer_seconds": 5.1072269724140505e-05,
+      "forward_seconds": 0.7080347797947091,
+      "backward_seconds": 0.6652767174510382,
+      "optimizer_step_seconds": 0.0018878636046496847,
+      "batch_seconds": 1.380370064493036,
+      "epoch_total_seconds": 301.27080540690804,
+      "average_batch_total_seconds": 1.4012595600321305,
+      "batch_count": 215,
+      "dataloader_fraction": 0.014907656036698531,
+      "prepare_fraction": 0.005019679171770647,
+      "cpu_tensor_views_fraction": 8.229177835605864e-06,
+      "flow_marginal_fraction": 0.004931789982234251,
+      "device_transfer_fraction": 3.6447401452853916e-05,
+      "forward_fraction": 0.5052845311388806,
+      "backward_fraction": 0.47477051106490487,
+      "optimizer_step_fraction": 0.001347261891013537
+    },
+    "validation_timing": {
+      "dataloader_seconds": 0.018557391655566687,
+      "prepare_batch_seconds": 0.0069034485995265035,
+      "cpu_tensor_views_seconds": 1.024954512508379e-05,
+      "flow_marginal_seconds": 0.006841363432855966,
+      "device_transfer_seconds": 3.285101087789776e-05,
+      "forward_seconds": 0.3994770250224974,
+      "backward_seconds": 0.0,
+      "optimizer_step_seconds": 0.0,
+      "batch_seconds": 0.40640020601147425,
+      "epoch_total_seconds": 38.24618379003368,
+      "average_batch_total_seconds": 0.42495759766704094,
+      "batch_count": 90,
+      "dataloader_fraction": 0.043668807799752796,
+      "prepare_fraction": 0.016245029239212318,
+      "cpu_tensor_views_fraction": 2.411898312055695e-05,
+      "flow_marginal_fraction": 0.01609893191794691,
+      "device_transfer_fraction": 7.730420883929435e-05,
+      "forward_fraction": 0.9400397291766793,
+      "backward_fraction": 0.0,
+      "optimizer_step_fraction": 0.0
+    },
+    "average_batch_time_seconds": 1.380370064493036,
+    "total_epoch_time_seconds": 296.7795638660027,
+    "trainability": {
+      "backbone_requires_grad": [],
+      "conditioning_requires_grad": [
+        "esm.network.0.weight",
+        "esm.network.0.bias",
+        "esm.network.1.weight",
+        "esm.network.1.bias",
+        "esm.network.4.weight",
+        "esm.network.4.bias",
+        "kinase.embedding.weight",
+        "state.embedding.weight",
+        "output_norm.weight",
+        "output_norm.bias"
+      ],
+      "backbone_trainable_count": 0,
+      "conditioning_trainable_count": 10,
+      "official_backbone_frozen": true
+    },
+    "train_metrics_csv": "reports/fold1/performance_audit/training_metrics_amp_1.csv"
+  },
+  "elapsed_wall_seconds": 698.828801124997,
+  "notes": [
+    "ESM embeddings are loaded from the existing cache through EmbeddingCache.load.",
+    "AMP on CPU is not active; use_amp_effective will be false unless CUDA is available."
+  ],
+  "analysis": {
+    "principal_bottleneck": "official FoldFlow forward/backward on the frozen backbone remains the dominant cost",
+    "safe_compute_reduction": "Keeping autograd for the conditioning path but avoiding unnecessary CPU<->GPU copies and using AMP on CUDA are safe"
+  }
+}

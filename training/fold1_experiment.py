@@ -6,7 +6,9 @@ import csv
 import json
 import math
 import os
+import time
 from dataclasses import dataclass
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -44,6 +46,7 @@ class Fold1TrainingConfig:
     guidance_scale: float = 2.0
     unfreeze_backbone: bool = False
     num_workers: int = 0
+    use_amp: bool = True
     reverse_steps: int = 6
     reverse_min_t: float = 0.0
     checkpoint_root: Path = Path("checkpoints/fold1")
@@ -69,6 +72,7 @@ def build_model_and_loaders(
     config: Fold1TrainingConfig,
     device: torch.device,
 ) -> tuple[FoldFlowBackbone, DataLoader, DataLoader, DataLoader, dict[str, Any]]:
+    pin_memory = device.type == "cuda"
     model = FoldFlowBackbone.from_pretrained(
         checkpoint_path=config.official_checkpoint,
         device=device,
@@ -83,6 +87,7 @@ def build_model_and_loaders(
         batch_size=config.batch_size,
         shuffle=True,
         num_workers=config.num_workers,
+        pin_memory=pin_memory,
         source_root=config.source_root,
     )
     validation_loader = create_translation_dataloader(
@@ -91,6 +96,7 @@ def build_model_and_loaders(
         batch_size=config.batch_size,
         shuffle=False,
         num_workers=config.num_workers,
+        pin_memory=pin_memory,
         source_root=config.source_root,
     )
     test_loader = create_translation_dataloader(
@@ -99,6 +105,7 @@ def build_model_and_loaders(
         batch_size=1,
         shuffle=False,
         num_workers=config.num_workers,
+        pin_memory=pin_memory,
         source_root=config.source_root,
     )
     fold_reports = {
@@ -129,25 +136,40 @@ def _prepare_training_batch(
     device: torch.device,
     cfg_dropout_probability: float,
     training: bool,
+    timing: dict[str, float] | None = None,
 ) -> tuple[dict[str, torch.Tensor], dict[str, torch.Tensor], dict[str, torch.Tensor]]:
-    foldflow_features = {
-        key: value.to(device)
-        for key, value in batch["foldflow_features"].items()
-    }
-    conditioning = {
-        key: value.to(device) for key, value in batch["conditioning"].items()
-    }
+    if timing is not None:
+        timing.setdefault("cpu_tensor_views_seconds", 0.0)
+        timing.setdefault("flow_marginal_seconds", 0.0)
+        timing.setdefault("device_transfer_seconds", 0.0)
+    foldflow_features_cpu = batch["foldflow_features"]
+    conditioning_cpu = batch["conditioning"]
+    conversion_start = time.perf_counter()
     batch_size, residue_count = batch["foldflow_features"]["rigids_t"].shape[:2]
-    source_rigids = batch["foldflow_features"]["rigids_t"].detach().cpu().reshape(-1, 7)
-    target_rigids = batch["foldflow_features"]["rigids_0"].detach().cpu().reshape(-1, 7)
-    res_mask = batch["foldflow_features"]["res_mask"].detach().cpu().reshape(-1)
+    source_rigids = foldflow_features_cpu["rigids_t"].detach().reshape(-1, 7)
+    target_rigids = foldflow_features_cpu["rigids_0"].detach().reshape(-1, 7)
+    res_mask = foldflow_features_cpu["res_mask"].detach().reshape(-1)
+    if timing is not None:
+        timing["cpu_tensor_views_seconds"] += time.perf_counter() - conversion_start
 
     t_value = float(torch.rand(()).mul(0.8).add(0.1).item()) if training else 0.5
+    flow_start = time.perf_counter()
     flow_match = model.flow_matcher.forward_marginal(
         rigids_0=ru.Rigid.from_tensor_7(target_rigids),
         t=t_value,
         rigids_1=ru.Rigid.from_tensor_7(source_rigids),
     )
+    if timing is not None:
+        timing["flow_marginal_seconds"] += time.perf_counter() - flow_start
+    transfer_start = time.perf_counter()
+    foldflow_features = {
+        key: value.to(device, non_blocking=True) if isinstance(value, torch.Tensor) else value
+        for key, value in foldflow_features_cpu.items()
+    }
+    conditioning = {
+        key: value.to(device, non_blocking=True) if isinstance(value, torch.Tensor) else value
+        for key, value in conditioning_cpu.items()
+    }
     foldflow_features["rigids_t"] = flow_match["rigids_t"].reshape(batch_size, residue_count, 7).to(device)
     foldflow_features["t"] = torch.full(
         (foldflow_features["rigids_t"].shape[0],), t_value, device=device
@@ -172,10 +194,12 @@ def _prepare_training_batch(
         .reshape(batch_size, residue_count, 3)
         .to(device)
         .float(),
-        "res_mask": batch["foldflow_features"]["res_mask"].to(device),
+        "res_mask": foldflow_features["res_mask"].to(device),
     }
     if isinstance(drop_mask, torch.Tensor):
         conditioning["target_state_drop_mask"] = drop_mask
+    if timing is not None:
+        timing["device_transfer_seconds"] += time.perf_counter() - transfer_start
     return foldflow_features, conditioning, targets
 
 
@@ -185,16 +209,24 @@ def compute_batch_losses(
     device: torch.device,
     cfg_dropout_probability: float,
     training: bool,
+    use_amp: bool = False,
+    prepare_timing: dict[str, float] | None = None,
 ) -> tuple[torch.Tensor, dict[str, float]]:
     foldflow_features, conditioning, targets = _prepare_training_batch(
-        batch, model, device, cfg_dropout_probability, training
+        batch, model, device, cfg_dropout_probability, training, timing=prepare_timing
     )
     drop_state = conditioning.pop("target_state_drop_mask", False)
-    outputs = model(
-        foldflow_features,
-        conditioning,
-        drop_target_state=drop_state,
+    amp_context = (
+        torch.cuda.amp.autocast(enabled=use_amp and device.type == "cuda")
+        if device.type == "cuda"
+        else nullcontext()
     )
+    with amp_context:
+        outputs = model(
+            foldflow_features,
+            conditioning,
+            drop_target_state=drop_state,
+        )
     rot_loss = _mean_masked_squared_error(
         outputs["rot_vectorfield"], targets["rot_vectorfield"], targets["res_mask"]
     )
@@ -217,38 +249,201 @@ def run_epoch(
     cfg_dropout_probability: float,
     optimizer: torch.optim.Optimizer | None = None,
     grad_clip: float | None = None,
-) -> dict[str, float]:
+    use_amp: bool = False,
+    scaler: torch.cuda.amp.GradScaler | None = None,
+    collect_timing: bool = False,
+) -> dict[str, float] | tuple[dict[str, float], dict[str, float]]:
     training = optimizer is not None
     if training:
         model.train()
     else:
         model.eval()
     totals = {"total_loss": 0.0, "rotation_loss": 0.0, "translation_loss": 0.0}
+    timing_totals = {
+        "dataloader_seconds": 0.0,
+        "prepare_batch_seconds": 0.0,
+        "cpu_tensor_views_seconds": 0.0,
+        "flow_marginal_seconds": 0.0,
+        "device_transfer_seconds": 0.0,
+        "forward_seconds": 0.0,
+        "backward_seconds": 0.0,
+        "optimizer_step_seconds": 0.0,
+        "batch_seconds": 0.0,
+    }
     count = 0
-    for batch in loader:
+    iterator = iter(loader)
+    for _ in range(len(loader)):
+        batch_fetch_start = time.perf_counter()
+        batch = next(iterator)
+        batch_fetch_time = time.perf_counter() - batch_fetch_start
         count += 1
         if training:
             optimizer.zero_grad(set_to_none=True)
-            loss, metrics = compute_batch_losses(
-                model, batch, device, cfg_dropout_probability, training=True
+            batch_start = time.perf_counter()
+            batch_metrics_start = time.perf_counter()
+            prepare_timing: dict[str, float] = {}
+            foldflow_features, conditioning, targets = _prepare_training_batch(
+                batch, model, device, cfg_dropout_probability, training=True, timing=prepare_timing
             )
-            loss.backward()
-            if grad_clip is not None:
-                torch.nn.utils.clip_grad_norm_(
-                    [parameter for parameter in model.parameters() if parameter.requires_grad],
-                    grad_clip,
+            timing_totals["prepare_batch_seconds"] += time.perf_counter() - batch_metrics_start
+            for key in ("cpu_tensor_views_seconds", "flow_marginal_seconds", "device_transfer_seconds"):
+                timing_totals[key] += prepare_timing.get(key, 0.0)
+            drop_state = conditioning.pop("target_state_drop_mask", False)
+            amp_context = (
+                torch.cuda.amp.autocast(enabled=use_amp and device.type == "cuda")
+                if device.type == "cuda"
+                else nullcontext()
+            )
+            forward_start = time.perf_counter()
+            with amp_context:
+                outputs = model(
+                    foldflow_features,
+                    conditioning,
+                    drop_target_state=drop_state,
                 )
-            optimizer.step()
+                rot_loss = _mean_masked_squared_error(
+                    outputs["rot_vectorfield"], targets["rot_vectorfield"], targets["res_mask"]
+                )
+                trans_loss = _mean_masked_squared_error(
+                    outputs["trans_vectorfield"], targets["trans_vectorfield"], targets["res_mask"]
+                )
+                loss = rot_loss + trans_loss
+            timing_totals["forward_seconds"] += time.perf_counter() - forward_start
+            backward_start = time.perf_counter()
+            if scaler is not None and scaler.is_enabled():
+                scaler.scale(loss).backward()
+                if grad_clip is not None:
+                    scaler.unscale_(optimizer)
+                    torch.nn.utils.clip_grad_norm_(
+                        [
+                            parameter
+                            for parameter in model.parameters()
+                            if parameter.requires_grad
+                        ],
+                        grad_clip,
+                    )
+                step_start = time.perf_counter()
+                scaler.step(optimizer)
+                scaler.update()
+                timing_totals["optimizer_step_seconds"] += time.perf_counter() - step_start
+            else:
+                loss.backward()
+                if grad_clip is not None:
+                    torch.nn.utils.clip_grad_norm_(
+                        [
+                            parameter
+                            for parameter in model.parameters()
+                            if parameter.requires_grad
+                        ],
+                        grad_clip,
+                    )
+                step_start = time.perf_counter()
+                optimizer.step()
+                timing_totals["optimizer_step_seconds"] += time.perf_counter() - step_start
+            timing_totals["backward_seconds"] += time.perf_counter() - backward_start
+            metrics = {
+                "total_loss": float(loss.detach().float().cpu()),
+                "rotation_loss": float(rot_loss.detach().float().cpu()),
+                "translation_loss": float(trans_loss.detach().float().cpu()),
+            }
+            timing_totals["batch_seconds"] += time.perf_counter() - batch_start
         else:
+            batch_start = time.perf_counter()
+            batch_metrics_start = time.perf_counter()
+            prepare_timing = {}
+            foldflow_features, conditioning, targets = _prepare_training_batch(
+                batch, model, device, cfg_dropout_probability, training=False, timing=prepare_timing
+            )
+            timing_totals["prepare_batch_seconds"] += time.perf_counter() - batch_metrics_start
+            for key in ("cpu_tensor_views_seconds", "flow_marginal_seconds", "device_transfer_seconds"):
+                timing_totals[key] += prepare_timing.get(key, 0.0)
+            drop_state = conditioning.pop("target_state_drop_mask", False)
+            forward_start = time.perf_counter()
             with torch.no_grad():
-                _, metrics = compute_batch_losses(
-                    model, batch, device, cfg_dropout_probability, training=False
+                outputs = model(
+                    foldflow_features,
+                    conditioning,
+                    drop_target_state=drop_state,
                 )
+                rot_loss = _mean_masked_squared_error(
+                    outputs["rot_vectorfield"], targets["rot_vectorfield"], targets["res_mask"]
+                )
+                trans_loss = _mean_masked_squared_error(
+                    outputs["trans_vectorfield"], targets["trans_vectorfield"], targets["res_mask"]
+                )
+                loss = rot_loss + trans_loss
+            timing_totals["forward_seconds"] += time.perf_counter() - forward_start
+            metrics = {
+                "total_loss": float(loss.detach().float().cpu()),
+                "rotation_loss": float(rot_loss.detach().float().cpu()),
+                "translation_loss": float(trans_loss.detach().float().cpu()),
+            }
+            timing_totals["batch_seconds"] += time.perf_counter() - batch_start
         for key in totals:
             totals[key] += metrics[key]
+        timing_totals["dataloader_seconds"] += batch_fetch_time
     if count == 0:
         raise ValueError("Data loader produced no batches")
-    return {key: value / count for key, value in totals.items()}
+    summary = {key: value / count for key, value in totals.items()}
+    timing_summary = {key: value / count for key, value in timing_totals.items()}
+    epoch_total_seconds = timing_totals["dataloader_seconds"] + timing_totals["batch_seconds"]
+    timing_summary["epoch_total_seconds"] = epoch_total_seconds
+    timing_summary["average_batch_total_seconds"] = epoch_total_seconds / count
+    timing_summary["batch_count"] = count
+    timing_summary["dataloader_fraction"] = timing_totals["dataloader_seconds"] / max(
+        epoch_total_seconds, 1e-12
+    )
+    timing_summary["prepare_fraction"] = timing_totals["prepare_batch_seconds"] / max(
+        epoch_total_seconds, 1e-12
+    )
+    timing_summary["cpu_tensor_views_fraction"] = timing_totals[
+        "cpu_tensor_views_seconds"
+    ] / max(epoch_total_seconds, 1e-12)
+    timing_summary["flow_marginal_fraction"] = timing_totals[
+        "flow_marginal_seconds"
+    ] / max(epoch_total_seconds, 1e-12)
+    timing_summary["device_transfer_fraction"] = timing_totals[
+        "device_transfer_seconds"
+    ] / max(epoch_total_seconds, 1e-12)
+    timing_summary["forward_fraction"] = timing_totals["forward_seconds"] / max(
+        epoch_total_seconds, 1e-12
+    )
+    timing_summary["backward_fraction"] = timing_totals["backward_seconds"] / max(
+        epoch_total_seconds, 1e-12
+    )
+    timing_summary["optimizer_step_fraction"] = timing_totals[
+        "optimizer_step_seconds"
+    ] / max(epoch_total_seconds, 1e-12)
+    if collect_timing:
+        return summary, timing_summary
+    return summary
+
+
+def parameter_trainability_report(model: FoldFlowBackbone) -> dict[str, Any]:
+    backbone_trainable = [
+        name
+        for name, parameter in model.official_model.named_parameters()
+        if parameter.requires_grad
+    ]
+    conditioning_trainable = [
+        name
+        for name, parameter in model.condition_encoder.named_parameters()
+        if parameter.requires_grad
+    ]
+    return {
+        "backbone_requires_grad": backbone_trainable,
+        "conditioning_requires_grad": conditioning_trainable,
+        "backbone_trainable_count": len(backbone_trainable),
+        "conditioning_trainable_count": len(conditioning_trainable),
+        "official_backbone_frozen": model.forward_is_frozen(),
+    }
+
+
+def recommended_num_workers(device: torch.device) -> int:
+    cpu_count = os.cpu_count() or 1
+    if device.type == "cuda":
+        return max(2, min(8, cpu_count // 2))
+    return max(0, min(4, cpu_count // 4))
 
 
 def validation_cfg_diagnostics(

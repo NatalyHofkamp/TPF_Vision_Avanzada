@@ -1,0 +1,21 @@
+{
+  "fold_id": 1,
+  "train_size": 215,
+  "validation_size": 90,
+  "test_size": 101,
+  "best_validation_loss": 218.71362816693028,
+  "best_epoch": 9,
+  "total_epochs_trained": 10,
+  "rmsd_source_target": 3.3161415052478542,
+  "rmsd_prediction_target": 17.074147639004735,
+  "average_improvement": -13.758006133756883,
+  "median_improvement": -13.765871729876192,
+  "conditioning_parameter_count": 400640,
+  "FoldFlow_parameter_count": 17446190,
+  "checkpoint_path": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/fold1/best_validation.pt",
+  "last_checkpoint_path": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/fold1/last.pt",
+  "metrics_csv": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/reports/fold1/training_metrics.csv",
+  "test_metrics_csv": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/reports/fold1/test_metrics.csv",
+  "test_summary_path": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/reports/fold1/test_summary.json",
+  "cfg_diagnostics_path": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/reports/fold1/cfg_diagnostics.json"
+}

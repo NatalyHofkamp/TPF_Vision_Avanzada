@@ -1,22 +1,22 @@
 {
   "0.0": {
-    "average_vectorfield_magnitude": 4.08743794713752,
-    "average_prediction_difference": 0.30110195685227625,
+    "average_vectorfield_magnitude": 6.523188667674794,
+    "average_prediction_difference": 0.42062741354087985,
     "batches": 90
   },
   "1.0": {
-    "average_vectorfield_magnitude": 4.11427994786492,
-    "average_prediction_difference": 0.30110195685227625,
+    "average_vectorfield_magnitude": 6.5377604661159365,
+    "average_prediction_difference": 0.42062741354087985,
     "batches": 90
   },
   "3.0": {
-    "average_vectorfield_magnitude": 4.551417806219408,
-    "average_prediction_difference": 0.30110195685227625,
+    "average_vectorfield_magnitude": 7.201734066155307,
+    "average_prediction_difference": 0.42062741354087985,
     "batches": 90
   },
   "5.0": {
-    "average_vectorfield_magnitude": 5.263611712218732,
-    "average_prediction_difference": 0.30110195685227625,
+    "average_vectorfield_magnitude": 8.204229848044145,
+    "average_prediction_difference": 0.42062741354087985,
     "batches": 90
   }
 }

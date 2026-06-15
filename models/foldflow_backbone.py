@@ -96,6 +96,11 @@ class FoldFlowBackbone(nn.Module):
             drop_target_state=drop_target_state,
         )
         with self._conditioning_context(node_condition):
+            # Do not wrap the official backbone in no_grad during training:
+            # gradients must flow through the frozen backbone ops to the
+            # trainable conditioning adapter. Parameters remain frozen via
+            # requires_grad=False, but autograd still traces the path to the
+            # adapter.
             return self.official_model(dict(foldflow_features))
 
     def guided_forward(
@@ -193,6 +198,9 @@ class FoldFlowBackbone(nn.Module):
         if self._backbone_frozen:
             self.official_model.eval()
         return self
+
+    def forward_is_frozen(self) -> bool:
+        return self._backbone_frozen
 
     @property
     def official_parameter_count(self) -> int:

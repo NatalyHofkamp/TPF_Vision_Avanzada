@@ -466,6 +466,7 @@ def create_translation_dataloader(
     batch_size: int = 1,
     shuffle: bool | None = None,
     num_workers: int = 0,
+    pin_memory: bool = False,
     **dataset_kwargs,
 ) -> DataLoader:
     dataset = InactiveActiveTranslationDataset(
@@ -478,5 +479,7 @@ def create_translation_dataloader(
         batch_size=batch_size,
         shuffle=shuffle,
         num_workers=num_workers,
+        pin_memory=pin_memory,
+        persistent_workers=num_workers > 0,
         collate_fn=translation_collate_fn,
     )
