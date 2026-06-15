@@ -1,0 +1,2 @@
+epoch,train_total_loss,train_delta_loss,train_distance_loss,val_total_loss,val_delta_loss,val_distance_loss
+1,8.050431772557543,8.050431772557543,0.0,7.699932559496826,7.699932559496826,0.0

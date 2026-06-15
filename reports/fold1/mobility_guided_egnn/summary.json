@@ -1,0 +1,125 @@
+{
+  "embeddings_loaded_from_cache": true,
+  "mobility_prior": {
+    "embeddings_loaded_from_cache": true,
+    "train_size": 61179,
+    "validation_size": 23501,
+    "test_size": 28055,
+    "classifier_metrics": {
+      "train": {
+        "accuracy": 0.9010281305676785,
+        "precision": 0.881558738436261,
+        "recall": 0.900109409190372,
+        "f1": 0.8907374993233124,
+        "pr_auc": 0.9614650576168025,
+        "roc_auc": 0.9678325966683354
+      },
+      "validation": {
+        "accuracy": 0.6338028169014085,
+        "precision": 0.7908569126976135,
+        "recall": 0.5460613223944935,
+        "f1": 0.6460475446244962,
+        "pr_auc": 0.8015735318909636,
+        "roc_auc": 0.7479167282083414
+      },
+      "test": {
+        "accuracy": 0.7844234539297807,
+        "precision": 0.6952577793087611,
+        "recall": 0.6408085511694359,
+        "f1": 0.6669236700077101,
+        "pr_auc": 0.7122563964062423,
+        "roc_auc": 0.8523203488003233
+      }
+    },
+    "regressor_metrics": {
+      "train": {
+        "mae": 0.7526138424873352,
+        "rmse": 1.100858211517334,
+        "pearson": 0.9628459237131257,
+        "spearman": 0.7822657759452233
+      },
+      "validation": {
+        "mae": 1.8645843267440796,
+        "rmse": 2.955024480819702,
+        "pearson": 0.56590221362917,
+        "spearman": 0.49658454000433727
+      },
+      "test": {
+        "mae": 1.2686045169830322,
+        "rmse": 2.7754530906677246,
+        "pearson": 0.5571648718376814,
+        "spearman": 0.5742848585545642
+      }
+    }
+  },
+  "identity": {
+    "Method": "Identity",
+    "RMSD Pred\u2192Target": 3.3161415052478542,
+    "RMSD Source\u2192Target": 3.3161415052478542,
+    "RMSD Source\u2192Pred": 0.0,
+    "Improvement": 0.0,
+    "Success Rate": 0.0,
+    "Mean True Motion": 2.253115698842719,
+    "Mean Pred Motion": 0.0,
+    "Mean Delta Norm": 0.0,
+    "Mean True Delta Norm": 2.253115698842719
+  },
+  "experiments": {
+    "EGNN_no_prior": {
+      "test_rmsd_prediction_target": 3.3077454209332733,
+      "test_rmsd_source_target": 3.3161415052478542,
+      "test_improvement": 0.008396084314581135,
+      "test_success_rate": 0.7425742574257426
+    },
+    "MobilityGuidedEGNN": {
+      "test_rmsd_prediction_target": 3.348872716503059,
+      "test_rmsd_source_target": 3.3161415052478542,
+      "test_improvement": -0.0327312112552046,
+      "test_success_rate": 0.504950495049505
+    }
+  },
+  "comparison_table": [
+    {
+      "Method": "Identity",
+      "RMSD Pred\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Pred": 0.0,
+      "Improvement": 0.0,
+      "Success Rate": 0.0,
+      "Mean True Motion": 2.253115698842719,
+      "Mean Pred Motion": 0.0,
+      "Mean Delta Norm": 0.0,
+      "Mean True Delta Norm": 2.253115698842719
+    },
+    {
+      "Method": "EGNN_no_prior",
+      "RMSD Pred\u2192Target": 3.3077454209332733,
+      "RMSD Source\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Pred": 0.45342249939207663,
+      "Improvement": 0.008396084314581135,
+      "Success Rate": 0.7425742574257426,
+      "Mean True Motion": 2.253115698842719,
+      "Mean Pred Motion": 0.466762252078198,
+      "Mean Delta Norm": 0.466762252078198,
+      "Mean True Delta Norm": 2.253115698842719
+    },
+    {
+      "Method": "MobilityGuidedEGNN",
+      "RMSD Pred\u2192Target": 3.348872716503059,
+      "RMSD Source\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Pred": 0.7195160839648665,
+      "Improvement": -0.0327312112552046,
+      "Success Rate": 0.504950495049505,
+      "Mean True Motion": 2.253115698842719,
+      "Mean Pred Motion": 0.504597254908911,
+      "Mean Delta Norm": 0.504597254908911,
+      "Mean True Delta Norm": 2.253115698842719
+    }
+  ],
+  "best_method": "EGNN_no_prior",
+  "reports": {
+    "mobility_prior": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/reports/fold1/mobility_prior",
+    "egnn": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/reports/fold1/mobility_guided_egnn"
+  },
+  "figures": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/figures/mobility_guided_egnn"
+}

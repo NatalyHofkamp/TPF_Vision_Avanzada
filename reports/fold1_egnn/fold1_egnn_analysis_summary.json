@@ -1,0 +1,69 @@
+{
+  "dataset": {
+    "train_size": 215,
+    "validation_size": 90,
+    "test_size": 101,
+    "train_average_rmsd_source_target": 4.034038032652631,
+    "validation_average_rmsd_source_target": 3.0776549502226733,
+    "test_average_rmsd_source_target": 3.3161415052478542
+  },
+  "identity": {
+    "Method": "Identity",
+    "RMSD Pred\u2192Target": 3.3161415052478542,
+    "RMSD Source\u2192Target": 3.3161415052478542,
+    "RMSD Source\u2192Pred": 0.0,
+    "Improvement": 0.0,
+    "Success Rate": 0.0,
+    "Mean True Motion": 2.2531156967966455,
+    "Mean Pred Motion": 0.0,
+    "Mean Delta Norm": 0.0,
+    "Mean True Delta Norm": 2.2531156967966455
+  },
+  "experiments": {
+    "EGNN_delta_only": {
+      "best_epoch": 7,
+      "best_validation_loss": 7.674293766419093,
+      "final_training_loss": 7.53867570023204,
+      "final_validation_loss": 7.675135275390413,
+      "validation_rmsd_prediction_target": 3.1230250052622917,
+      "validation_improvement": -0.045370055039618266,
+      "validation_success_rate": 0.4888888888888889,
+      "test_rmsd_prediction_target": 3.3552890868523813,
+      "test_rmsd_source_target": 3.3161415052478542,
+      "test_improvement": -0.03914758160452622,
+      "test_success_rate": 0.49504950495049505,
+      "mean_true_motion": 2.253115698842719,
+      "mean_pred_motion": 0.6527584661351572,
+      "mean_delta_norm": 0.6527584661351572,
+      "mean_true_delta_norm": 2.253115698842719,
+      "training_seconds": 1851.360905499998,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/fold1_egnn_analysis/EGNN_delta_only/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/fold1_egnn_analysis/EGNN_delta_only/last.pt"
+    },
+    "EGNN_delta_plus_distance": {
+      "best_epoch": 3,
+      "best_validation_loss": 7.94901347094112,
+      "final_training_loss": 7.865106221686962,
+      "final_validation_loss": 7.968215585417218,
+      "validation_rmsd_prediction_target": 3.0802129347454583,
+      "validation_improvement": -0.002557984522784684,
+      "validation_success_rate": 0.5777777777777777,
+      "test_rmsd_prediction_target": 3.304522337259517,
+      "test_rmsd_source_target": 3.3161415052478542,
+      "test_improvement": 0.011619167988336869,
+      "test_success_rate": 0.7623762376237624,
+      "mean_true_motion": 2.253115698842719,
+      "mean_pred_motion": 0.627350114949859,
+      "mean_delta_norm": 0.627350114949859,
+      "mean_true_delta_norm": 2.253115698842719,
+      "training_seconds": 1194.5892384999897,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/fold1_egnn_analysis/EGNN_delta_plus_distance/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/fold1_egnn_analysis/EGNN_delta_plus_distance/last.pt"
+    }
+  },
+  "foldflow_reference_conditional_rmsd": null,
+  "comparisons": {
+    "EGNN_delta_only_vs_identity": 0.039147581604527026,
+    "EGNN_delta_plus_distance_vs_identity": -0.011619167988337065
+  }
+}
