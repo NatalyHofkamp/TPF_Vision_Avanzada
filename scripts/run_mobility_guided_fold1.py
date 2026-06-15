@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Run the Fold 1 mobility-prior + EGNN ablation suite."""
 
 from __future__ import annotations
@@ -93,9 +92,28 @@ def parse_array_cell(value: object) -> np.ndarray:
     return np.asarray(value, dtype=np.float64)
 
 
+def to_jsonable(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(key): to_jsonable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [to_jsonable(item) for item in value]
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    if isinstance(value, (np.floating, np.integer)):
+        return value.item()
+    if isinstance(value, torch.Tensor):
+        tensor = value.detach().cpu()
+        return tensor.item() if tensor.ndim == 0 else tensor.tolist()
+    if isinstance(value, (float, int, str, bool)) or value is None:
+        return value
+    return str(value)
+
+
 def safe_json_write(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(to_jsonable(payload), indent=2) + "\n", encoding="utf-8")
 
 
 def mean_metric(frame: pd.DataFrame, column: str) -> float:
@@ -471,7 +489,7 @@ def main() -> None:
     }
     safe_json_write(egnn_report_root / "summary.json", summary)
     LOGGER.info("Finished. Best method: %s", best_method)
-    print(json.dumps({k: v for k, v in summary.items() if k != "experiments"}, indent=2))
+    print(json.dumps(to_jsonable({k: v for k, v in summary.items() if k != "experiments"}), indent=2))
 
 
 if __name__ == "__main__":

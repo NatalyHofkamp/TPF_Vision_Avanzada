@@ -60,22 +60,197 @@
     "Improvement": 0.0,
     "Success Rate": 0.0,
     "Mean True Motion": 2.253115698842719,
-    "Mean Pred Motion": 0.0,
-    "Mean Delta Norm": 0.0,
-    "Mean True Delta Norm": 2.253115698842719
+    "Mean Pred Motion": 0.0
   },
   "experiments": {
     "EGNN_no_prior": {
-      "test_rmsd_prediction_target": 3.3077454209332733,
-      "test_rmsd_source_target": 3.3161415052478542,
-      "test_improvement": 0.008396084314581135,
-      "test_success_rate": 0.7425742574257426
+      "name": "EGNN_no_prior",
+      "history": "   epoch  train_total_loss  train_delta_loss  train_distance_loss  val_total_loss  val_delta_loss  val_distance_loss\n0      1          8.070123          8.070123                  0.0        7.697275        7.697275                0.0\n1      2          7.791269          7.791269                  0.0        7.725365        7.725365                0.0\n2      3          7.680563          7.680563                  0.0        7.716412        7.716412                0.0\n3      4          7.613503          7.613503                  0.0        7.712350        7.712350                0.0\n4      5          7.572782          7.572782                  0.0        7.719968        7.719968                0.0",
+      "best_epoch": 1,
+      "best_validation_loss": 7.697274804280864,
+      "training_seconds": 586.1989801669843,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/EGNN_no_prior/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/EGNN_no_prior/last.pt",
+      "val_summary": {
+        "rmsd_source_target": 3.0776549502226733,
+        "rmsd_prediction_target": 3.1087745018700508,
+        "rmsd_source_prediction": 0.8180510234861693,
+        "rmsd_improvement": -0.03111955164737767,
+        "success_rate": 0.4777777777777778,
+        "mean_true_motion": 3.4072361595100826,
+        "mean_pred_motion": 0.6697842465506659
+      },
+      "test_summary": {
+        "rmsd_source_target": 3.3161415052478542,
+        "rmsd_prediction_target": 3.3416958802870123,
+        "rmsd_source_prediction": 0.7783967884515312,
+        "rmsd_improvement": -0.02555437503915782,
+        "success_rate": 0.5643564356435643,
+        "mean_true_motion": 2.253115698842719,
+        "mean_pred_motion": 0.6783156867074495
+      }
     },
     "MobilityGuidedEGNN": {
-      "test_rmsd_prediction_target": 3.348872716503059,
-      "test_rmsd_source_target": 3.3161415052478542,
-      "test_improvement": -0.0327312112552046,
-      "test_success_rate": 0.504950495049505
+      "name": "MobilityGuidedEGNN",
+      "history": "   epoch  train_total_loss  train_delta_loss  train_distance_loss  val_total_loss  val_delta_loss  val_distance_loss\n0      1          8.085741          8.085741                  0.0        7.666489        7.666489                0.0\n1      2          7.816992          7.816992                  0.0        7.742981        7.742981                0.0\n2      3          7.709255          7.709255                  0.0        7.733281        7.733281                0.0\n3      4          7.631645          7.631645                  0.0        7.709057        7.709057                0.0\n4      5          7.575271          7.575271                  0.0        7.717606        7.717606                0.0",
+      "best_epoch": 1,
+      "best_validation_loss": 7.666488665673468,
+      "training_seconds": 379.75622004200704,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN/last.pt",
+      "val_summary": {
+        "rmsd_source_target": 3.0776549502226733,
+        "rmsd_prediction_target": 3.1213205349520075,
+        "rmsd_source_prediction": 0.8117266538983603,
+        "rmsd_improvement": -0.04366558472933422,
+        "success_rate": 0.4666666666666667,
+        "mean_true_motion": 3.4072361595100826,
+        "mean_pred_motion": 0.6463037312030793
+      },
+      "test_summary": {
+        "rmsd_source_target": 3.3161415052478542,
+        "rmsd_prediction_target": 3.3493375512241528,
+        "rmsd_source_prediction": 0.7912617315799728,
+        "rmsd_improvement": -0.033196045976298855,
+        "success_rate": 0.504950495049505,
+        "mean_true_motion": 2.253115698842719,
+        "mean_pred_motion": 0.6459442908220953
+      }
+    },
+    "MobilityGuidedEGNN_dist_0p0": {
+      "name": "MobilityGuidedEGNN_dist_0p0",
+      "history": "   epoch  train_total_loss  train_delta_loss  train_distance_loss  val_total_loss  val_delta_loss  val_distance_loss\n0      1          8.067067          8.067067                  0.0        7.715104        7.715104                0.0\n1      2          7.788866          7.788866                  0.0        7.730707        7.730707                0.0\n2      3          7.680544          7.680544                  0.0        7.655998        7.655998                0.0\n3      4          7.609310          7.609310                  0.0        7.713564        7.713564                0.0\n4      5          7.567704          7.567704                  0.0        7.732067        7.732067                0.0\n5      6          7.522034          7.522034                  0.0        7.728522        7.728522                0.0\n6      7          7.492292          7.492292                  0.0        7.704294        7.704294                0.0",
+      "best_epoch": 3,
+      "best_validation_loss": 7.65599801995688,
+      "training_seconds": 500.8871664170001,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_dist_0p0/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_dist_0p0/last.pt",
+      "val_summary": {
+        "rmsd_source_target": 3.0776549502226733,
+        "rmsd_prediction_target": 3.1315080878488843,
+        "rmsd_source_prediction": 0.8317539473478243,
+        "rmsd_improvement": -0.053853137626210856,
+        "success_rate": 0.4444444444444444,
+        "mean_true_motion": 3.4072361595100826,
+        "mean_pred_motion": 0.6470801062054105
+      },
+      "test_summary": {
+        "rmsd_source_target": 3.3161415052478542,
+        "rmsd_prediction_target": 3.3465904523831793,
+        "rmsd_source_prediction": 0.7758534376397771,
+        "rmsd_improvement": -0.030448947135325383,
+        "success_rate": 0.5148514851485149,
+        "mean_true_motion": 2.253115698842719,
+        "mean_pred_motion": 0.5888532630287775
+      }
+    },
+    "MobilityGuidedEGNN_dist_0p1": {
+      "name": "MobilityGuidedEGNN_dist_0p1",
+      "history": "   epoch  train_total_loss  train_delta_loss  train_distance_loss  val_total_loss  val_delta_loss  val_distance_loss\n0      1          8.165307          8.041779             1.235278        7.844996        7.718149           1.268468\n1      2          7.896935          7.772359             1.245762        7.835111        7.704471           1.306401\n2      3          7.772214          7.648341             1.238728        7.777802        7.644909           1.328926\n3      4          7.704394          7.581151             1.232435        7.837694        7.701938           1.357557\n4      5          7.653813          7.531002             1.228108        7.875384        7.737225           1.381592\n5      6          7.614748          7.492142             1.226063        7.841132        7.700924           1.402076\n6      7          7.592454          7.469690             1.227636        7.819333        7.680179           1.391544",
+      "best_epoch": 3,
+      "best_validation_loss": 7.777801866829395,
+      "training_seconds": 569.9922284579952,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_dist_0p1/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_dist_0p1/last.pt",
+      "val_summary": {
+        "rmsd_source_target": 3.0776549502226733,
+        "rmsd_prediction_target": 3.1196768059985107,
+        "rmsd_source_prediction": 0.6236074863347124,
+        "rmsd_improvement": -0.04202185577583736,
+        "success_rate": 0.4666666666666667,
+        "mean_true_motion": 3.4072361595100826,
+        "mean_pred_motion": 0.7155852423773872
+      },
+      "test_summary": {
+        "rmsd_source_target": 3.3161415052478542,
+        "rmsd_prediction_target": 3.325530341611381,
+        "rmsd_source_prediction": 0.5758146522662809,
+        "rmsd_improvement": -0.009388836363526581,
+        "success_rate": 0.6336633663366337,
+        "mean_true_motion": 2.253115698842719,
+        "mean_pred_motion": 0.6781720814138356
+      }
+    },
+    "MobilityGuidedEGNN_dist_0p5": {
+      "name": "MobilityGuidedEGNN_dist_0p5",
+      "history": "   epoch  train_total_loss  train_delta_loss  train_distance_loss  val_total_loss  val_delta_loss  val_distance_loss\n0      1          8.677152          8.065768             1.222769        8.315922        7.687091           1.257663\n1      2          8.386558          7.778395             1.216325        8.277705        7.636916           1.281578\n2      3          8.257287          7.653084             1.208406        8.360835        7.706167           1.309336\n3      4          8.185678          7.592425             1.186507        8.369096        7.707203           1.323787\n4      5          8.155534          7.566131             1.178806        8.393126        7.727833           1.330585\n5      6          8.115104          7.529050             1.172108        8.370321        7.698398           1.343845",
+      "best_epoch": 2,
+      "best_validation_loss": 8.277705035689804,
+      "training_seconds": 496.83017012500204,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_dist_0p5/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_dist_0p5/last.pt",
+      "val_summary": {
+        "rmsd_source_target": 3.0776549502226733,
+        "rmsd_prediction_target": 3.1012885907641348,
+        "rmsd_source_prediction": 0.5749313277364858,
+        "rmsd_improvement": -0.023633640541461363,
+        "success_rate": 0.5222222222222223,
+        "mean_true_motion": 3.4072361595100826,
+        "mean_pred_motion": 0.6638343632221222
+      },
+      "test_summary": {
+        "rmsd_source_target": 3.3161415052478542,
+        "rmsd_prediction_target": 3.3299369473094904,
+        "rmsd_source_prediction": 0.5153127900564776,
+        "rmsd_improvement": -0.0137954420616358,
+        "success_rate": 0.6534653465346535,
+        "mean_true_motion": 2.253115698842719,
+        "mean_pred_motion": 0.6491907551737115
+      }
+    },
+    "MobilityGuidedEGNN_dist_1p0": {
+      "name": "MobilityGuidedEGNN_dist_1p0",
+      "history": "   epoch  train_total_loss  train_delta_loss  train_distance_loss  val_total_loss  val_delta_loss  val_distance_loss\n0      1          9.333796          8.107759             1.226037        8.955844        7.709205           1.246639\n1      2          9.026784          7.822634             1.204151        8.934788        7.669168           1.265620\n2      3          8.894434          7.708575             1.185859        8.982668        7.701172           1.281496\n3      4          8.816150          7.646651             1.169499        9.011964        7.705005           1.306959\n4      5          8.747117          7.592395             1.154722        9.030903        7.709123           1.321781\n5      6          8.702001          7.558641             1.143360        9.035673        7.706626           1.329047",
+      "best_epoch": 2,
+      "best_validation_loss": 8.93478837178813,
+      "training_seconds": 487.77511120800045,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_dist_1p0/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_dist_1p0/last.pt",
+      "val_summary": {
+        "rmsd_source_target": 3.0776549502226733,
+        "rmsd_prediction_target": 3.1154305126871007,
+        "rmsd_source_prediction": 0.5734215870633926,
+        "rmsd_improvement": -0.03777556246442701,
+        "success_rate": 0.5222222222222223,
+        "mean_true_motion": 3.4072361595100826,
+        "mean_pred_motion": 0.5932811054918501
+      },
+      "test_summary": {
+        "rmsd_source_target": 3.3161415052478542,
+        "rmsd_prediction_target": 3.3292139309070263,
+        "rmsd_source_prediction": 0.5117026272410752,
+        "rmsd_improvement": -0.013072425659173085,
+        "success_rate": 0.5742574257425742,
+        "mean_true_motion": 2.253115698842719,
+        "mean_pred_motion": 0.5964767938793296
+      }
+    },
+    "MobilityGuidedEGNN_weighted": {
+      "name": "MobilityGuidedEGNN_weighted",
+      "history": "   epoch  train_total_loss  train_delta_loss  train_distance_loss  val_total_loss  val_delta_loss  val_distance_loss\n0      1         10.236387         10.112420             1.239665        8.858984        8.732787           1.261969\n1      2          9.885022          9.760087             1.249350        8.933351        8.805118           1.282332\n2      3          9.739324          9.615211             1.241135        8.924419        8.791877           1.325419\n3      4          9.663201          9.539833             1.233676        8.949351        8.815286           1.340645\n4      5          9.615912          9.493379             1.225326        8.921159        8.784343           1.368163",
+      "best_epoch": 1,
+      "best_validation_loss": 8.858984439447521,
+      "training_seconds": 527.1949940409977,
+      "checkpoint_best": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_weighted/best.pt",
+      "checkpoint_last": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/checkpoints/mobility_guided_egnn/MobilityGuidedEGNN_weighted/last.pt",
+      "val_summary": {
+        "rmsd_source_target": 3.0776549502226733,
+        "rmsd_prediction_target": 3.1106303688762718,
+        "rmsd_source_prediction": 0.6319593793712,
+        "rmsd_improvement": -0.03297541865359837,
+        "success_rate": 0.5222222222222223,
+        "mean_true_motion": 3.4072361595100826,
+        "mean_pred_motion": 0.6600145737330119
+      },
+      "test_summary": {
+        "rmsd_source_target": 3.3161415052478542,
+        "rmsd_prediction_target": 3.3402019750873486,
+        "rmsd_source_prediction": 0.6040034495725978,
+        "rmsd_improvement": -0.02406046983949526,
+        "success_rate": 0.5247524752475248,
+        "mean_true_motion": 2.253115698842719,
+        "mean_pred_motion": 0.6442755985968184
+      }
     }
   },
   "comparison_table": [
@@ -87,36 +262,80 @@
       "Improvement": 0.0,
       "Success Rate": 0.0,
       "Mean True Motion": 2.253115698842719,
-      "Mean Pred Motion": 0.0,
-      "Mean Delta Norm": 0.0,
-      "Mean True Delta Norm": 2.253115698842719
+      "Mean Pred Motion": 0.0
     },
     {
       "Method": "EGNN_no_prior",
-      "RMSD Pred\u2192Target": 3.3077454209332733,
+      "RMSD Pred\u2192Target": 3.3416958802870123,
       "RMSD Source\u2192Target": 3.3161415052478542,
-      "RMSD Source\u2192Pred": 0.45342249939207663,
-      "Improvement": 0.008396084314581135,
-      "Success Rate": 0.7425742574257426,
+      "RMSD Source\u2192Pred": 0.7783967884515312,
+      "Improvement": -0.02555437503915782,
+      "Success Rate": 0.5643564356435643,
       "Mean True Motion": 2.253115698842719,
-      "Mean Pred Motion": 0.466762252078198,
-      "Mean Delta Norm": 0.466762252078198,
-      "Mean True Delta Norm": 2.253115698842719
+      "Mean Pred Motion": 0.6783156867074495
     },
     {
       "Method": "MobilityGuidedEGNN",
-      "RMSD Pred\u2192Target": 3.348872716503059,
+      "RMSD Pred\u2192Target": 3.3493375512241528,
       "RMSD Source\u2192Target": 3.3161415052478542,
-      "RMSD Source\u2192Pred": 0.7195160839648665,
-      "Improvement": -0.0327312112552046,
+      "RMSD Source\u2192Pred": 0.7912617315799728,
+      "Improvement": -0.033196045976298855,
       "Success Rate": 0.504950495049505,
       "Mean True Motion": 2.253115698842719,
-      "Mean Pred Motion": 0.504597254908911,
-      "Mean Delta Norm": 0.504597254908911,
-      "Mean True Delta Norm": 2.253115698842719
+      "Mean Pred Motion": 0.6459442908220953
+    },
+    {
+      "Method": "MobilityGuidedEGNN_dist_0p0",
+      "RMSD Pred\u2192Target": 3.3465904523831793,
+      "RMSD Source\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Pred": 0.7758534376397771,
+      "Improvement": -0.030448947135325383,
+      "Success Rate": 0.5148514851485149,
+      "Mean True Motion": 2.253115698842719,
+      "Mean Pred Motion": 0.5888532630287775
+    },
+    {
+      "Method": "MobilityGuidedEGNN_dist_0p1",
+      "RMSD Pred\u2192Target": 3.325530341611381,
+      "RMSD Source\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Pred": 0.5758146522662809,
+      "Improvement": -0.009388836363526581,
+      "Success Rate": 0.6336633663366337,
+      "Mean True Motion": 2.253115698842719,
+      "Mean Pred Motion": 0.6781720814138356
+    },
+    {
+      "Method": "MobilityGuidedEGNN_dist_0p5",
+      "RMSD Pred\u2192Target": 3.3299369473094904,
+      "RMSD Source\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Pred": 0.5153127900564776,
+      "Improvement": -0.0137954420616358,
+      "Success Rate": 0.6534653465346535,
+      "Mean True Motion": 2.253115698842719,
+      "Mean Pred Motion": 0.6491907551737115
+    },
+    {
+      "Method": "MobilityGuidedEGNN_dist_1p0",
+      "RMSD Pred\u2192Target": 3.3292139309070263,
+      "RMSD Source\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Pred": 0.5117026272410752,
+      "Improvement": -0.013072425659173085,
+      "Success Rate": 0.5742574257425742,
+      "Mean True Motion": 2.253115698842719,
+      "Mean Pred Motion": 0.5964767938793296
+    },
+    {
+      "Method": "MobilityGuidedEGNN_weighted",
+      "RMSD Pred\u2192Target": 3.3402019750873486,
+      "RMSD Source\u2192Target": 3.3161415052478542,
+      "RMSD Source\u2192Pred": 0.6040034495725978,
+      "Improvement": -0.02406046983949526,
+      "Success Rate": 0.5247524752475248,
+      "Mean True Motion": 2.253115698842719,
+      "Mean Pred Motion": 0.6442755985968184
     }
   ],
-  "best_method": "EGNN_no_prior",
+  "best_method": "MobilityGuidedEGNN_dist_0p5",
   "reports": {
     "mobility_prior": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/reports/fold1/mobility_prior",
     "egnn": "/Users/josefinadehan/tp_vision_avanzada/TPF_Vision_Avanzada/reports/fold1/mobility_guided_egnn"
