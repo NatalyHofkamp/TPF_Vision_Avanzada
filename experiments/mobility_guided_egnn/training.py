@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import math
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -13,18 +14,46 @@ from typing import Any, Iterable
 import numpy as np
 import pandas as pd
 import torch
+import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
-from kinase_data.esm import EmbeddingCache
-from kinase_data.translation import InactiveActiveTranslationDataset
+try:
+    from kinase_data.esm import EmbeddingCache
+    from kinase_data.translation import InactiveActiveTranslationDataset
+except ModuleNotFoundError:  # pragma: no cover - notebook/script convenience
+    PROJECT_ROOT = Path(__file__).resolve().parents[2]
+    if str(PROJECT_ROOT) not in sys.path:
+        sys.path.insert(0, str(PROJECT_ROOT))
+    from kinase_data.esm import EmbeddingCache
+    from kinase_data.translation import InactiveActiveTranslationDataset
 
-from models.mobility_guided_egnn import (
-    MobilityEGNNConfig,
-    MobilityGuidedEGNN,
-    local_pairwise_distance_loss,
-    weighted_delta_loss,
-)
-from .data import load_pdb_chain_residues
+try:
+    from models.mobility_guided_egnn import (
+        MobilityEGNNConfig,
+        MobilityGuidedEGNN,
+        direction_alignment_loss,
+        mobile_classification_loss,
+        local_pairwise_distance_loss,
+        weighted_delta_loss,
+        weighted_motion_loss,
+    )
+except ModuleNotFoundError:  # pragma: no cover - notebook/script convenience
+    PROJECT_ROOT = Path(__file__).resolve().parents[2]
+    if str(PROJECT_ROOT) not in sys.path:
+        sys.path.insert(0, str(PROJECT_ROOT))
+    from models.mobility_guided_egnn import (
+        MobilityEGNNConfig,
+        MobilityGuidedEGNN,
+        direction_alignment_loss,
+        mobile_classification_loss,
+        local_pairwise_distance_loss,
+        weighted_delta_loss,
+        weighted_motion_loss,
+    )
+try:
+    from .data import load_pdb_chain_residues
+except ImportError:  # pragma: no cover - direct script execution
+    from experiments.mobility_guided_egnn.data import load_pdb_chain_residues
 
 LOGGER = logging.getLogger(__name__)
 
@@ -291,7 +320,7 @@ def predict_egnn_split(
             mobility_binary = batch["mobility_binary"].to(device)
             mask = batch["mask"].to(device)
             binary_mask = mobility_binary if use_binary_mobile_mask else None
-            pred_delta, pred_coords = model(
+            pred_delta, pred_coords, pred_motion, pred_direction, pred_mobile_logits, gate = model(
                 coords_source,
                 esm,
                 mobility_prior,
@@ -313,6 +342,8 @@ def predict_egnn_split(
                     "mean_pred_motion": float(pred_motion.mean()),
                     "predicted_delta_norm_mean": float(pred_motion.mean()),
                     "true_delta_norm_mean": float(true_motion.mean()),
+                    "mean_pred_mobile_prob": float(torch.sigmoid(pred_mobile_logits[sample_offset, :n]).mean().cpu()),
+                    "mean_gate": float(gate[sample_offset, :n].mean().cpu()),
                     "source_coords": source_np.tolist(),
                     "target_coords": target_np.tolist(),
                     "prediction_coords": pred_np.tolist(),
@@ -334,6 +365,9 @@ def train_egnn_experiment(
     lambda_distance: float = 0.0,
     use_weighted_loss: bool = False,
     alpha: float = 1.0,
+    motion_loss_weight: float = 1.0,
+    direction_loss_weight: float = 0.5,
+    mobile_loss_weight: float = 0.5,
     max_epochs: int = 20,
     patience: int = 5,
     learning_rate: float = 1e-4,
@@ -364,7 +398,7 @@ def train_egnn_experiment(
             patience,
         )
         model.train()
-        train_totals = {"loss": 0.0, "delta": 0.0, "distance": 0.0, "samples": 0}
+        train_totals = {"loss": 0.0, "delta": 0.0, "motion": 0.0, "direction": 0.0, "mobile": 0.0, "distance": 0.0, "samples": 0}
         for batch in loaders["train"]:
             coords_source = batch["coords_source"].to(device)
             coords_target = batch["coords_target"].to(device)
@@ -373,18 +407,51 @@ def train_egnn_experiment(
             mobility_prior = batch["mobility_prior"].to(device)
             mobility_binary = batch["mobility_binary"].to(device)
             mask = batch["mask"].to(device)
+            true_motion = true_delta.norm(dim=-1)
+            true_mobile = (true_motion > 2.0).float()
+            true_direction = true_delta / true_motion.clamp_min(1e-6).unsqueeze(-1)
+            if use_weighted_loss:
+                loss_focus = true_mobile
+                delta_focus_weight = 1.0 + alpha * true_mobile
+                motion_focus_weight = 1.0 + alpha * true_mobile
+            else:
+                loss_focus = true_mobile
+                delta_focus_weight = 1.0 + true_mobile
+                motion_focus_weight = 1.0 + true_mobile
             with torch.amp.autocast("cuda", enabled=use_amp and device.type == "cuda"):
-                pred_delta, pred_coords = model(coords_source, esm, mobility_prior, mask, binary_mobile_mask=mobility_binary)
+                pred_delta, pred_coords, pred_motion, pred_direction, pred_mobile_logits, gate = model(
+                    coords_source,
+                    esm,
+                    mobility_prior,
+                    mask,
+                    binary_mobile_mask=mobility_binary,
+                )
                 if use_weighted_loss:
-                    delta_loss = weighted_delta_loss(pred_delta, true_delta, mobility_prior, mask, alpha=alpha)
+                    delta_loss = weighted_delta_loss(pred_delta, true_delta, loss_focus, mask, alpha=alpha)
+                    motion_loss = weighted_motion_loss(pred_motion, true_motion, loss_focus, mask, alpha=alpha)
                 else:
-                    delta_loss = ((pred_delta - true_delta).pow(2) * mask.unsqueeze(-1)).sum() / mask.sum().clamp_min(1.0) / 3.0
+                    delta_weights = delta_focus_weight.unsqueeze(-1) * mask.unsqueeze(-1)
+                    motion_weights = motion_focus_weight * mask
+                    delta_loss = ((pred_delta - true_delta).pow(2) * delta_weights).sum() / delta_weights.sum().clamp_min(1.0) / 3.0
+                    motion_loss = ((pred_motion - true_motion).pow(2) * motion_weights).sum() / motion_weights.sum().clamp_min(1.0)
+                direction_loss = direction_alignment_loss(pred_direction, true_direction, true_mobile, mask)
+                mobile_loss = mobile_classification_loss(pred_mobile_logits, true_mobile, mask)
                 distance_loss = (
-                    local_pairwise_distance_loss(pred_coords, coords_target, mask, window_radius=distance_window_radius)
+                    local_pairwise_distance_loss(
+                        pred_coords,
+                        coords_target,
+                        mask,
+                        window_radius=distance_window_radius,
+                        focus_mask=true_mobile,
+                    )
                     if lambda_distance > 0
                     else torch.zeros((), device=device)
                 )
-                loss = delta_loss + lambda_distance * distance_loss
+                loss = delta_loss
+                loss = loss + motion_loss_weight * motion_loss
+                loss = loss + direction_loss_weight * direction_loss
+                loss = loss + mobile_loss_weight * mobile_loss
+                loss = loss + lambda_distance * distance_loss
             if not torch.isfinite(loss):
                 raise FloatingPointError(f"Non-finite loss in epoch {epoch} of {name}")
             optimizer.zero_grad(set_to_none=True)
@@ -402,11 +469,14 @@ def train_egnn_experiment(
                 raise FloatingPointError(f"Non-finite gradient norm in {name}")
             train_totals["loss"] += float(loss.detach().cpu()) * coords_source.shape[0]
             train_totals["delta"] += float(delta_loss.detach().cpu()) * coords_source.shape[0]
+            train_totals["motion"] += float(motion_loss.detach().cpu()) * coords_source.shape[0]
+            train_totals["direction"] += float(direction_loss.detach().cpu()) * coords_source.shape[0]
+            train_totals["mobile"] += float(mobile_loss.detach().cpu()) * coords_source.shape[0]
             train_totals["distance"] += float(distance_loss.detach().cpu()) * coords_source.shape[0]
             train_totals["samples"] += int(coords_source.shape[0])
 
         model.eval()
-        val_totals = {"loss": 0.0, "delta": 0.0, "distance": 0.0, "samples": 0}
+        val_totals = {"loss": 0.0, "delta": 0.0, "motion": 0.0, "direction": 0.0, "mobile": 0.0, "distance": 0.0, "samples": 0}
         with torch.no_grad():
             for batch in loaders["validation"]:
                 coords_source = batch["coords_source"].to(device)
@@ -416,19 +486,51 @@ def train_egnn_experiment(
                 mobility_prior = batch["mobility_prior"].to(device)
                 mobility_binary = batch["mobility_binary"].to(device)
                 mask = batch["mask"].to(device)
-                pred_delta, pred_coords = model(coords_source, esm, mobility_prior, mask, binary_mobile_mask=mobility_binary)
+                true_motion = true_delta.norm(dim=-1)
+                true_mobile = (true_motion > 2.0).float()
+                true_direction = true_delta / true_motion.clamp_min(1e-6).unsqueeze(-1)
                 if use_weighted_loss:
-                    delta_loss = weighted_delta_loss(pred_delta, true_delta, mobility_prior, mask, alpha=alpha)
+                    loss_focus = true_mobile
+                    delta_focus_weight = 1.0 + alpha * true_mobile
+                    motion_focus_weight = 1.0 + alpha * true_mobile
                 else:
-                    delta_loss = ((pred_delta - true_delta).pow(2) * mask.unsqueeze(-1)).sum() / mask.sum().clamp_min(1.0) / 3.0
+                    loss_focus = true_mobile
+                    delta_focus_weight = 1.0 + true_mobile
+                    motion_focus_weight = 1.0 + true_mobile
+                pred_delta, pred_coords, pred_motion, pred_direction, pred_mobile_logits, gate = model(
+                    coords_source, esm, mobility_prior, mask, binary_mobile_mask=mobility_binary
+                )
+                if use_weighted_loss:
+                    delta_loss = weighted_delta_loss(pred_delta, true_delta, loss_focus, mask, alpha=alpha)
+                    motion_loss = weighted_motion_loss(pred_motion, true_motion, loss_focus, mask, alpha=alpha)
+                else:
+                    delta_weights = delta_focus_weight.unsqueeze(-1) * mask.unsqueeze(-1)
+                    motion_weights = motion_focus_weight * mask
+                    delta_loss = ((pred_delta - true_delta).pow(2) * delta_weights).sum() / delta_weights.sum().clamp_min(1.0) / 3.0
+                    motion_loss = ((pred_motion - true_motion).pow(2) * motion_weights).sum() / motion_weights.sum().clamp_min(1.0)
+                direction_loss = direction_alignment_loss(pred_direction, true_direction, true_mobile, mask)
+                mobile_loss = mobile_classification_loss(pred_mobile_logits, true_mobile, mask)
                 distance_loss = (
-                    local_pairwise_distance_loss(pred_coords, coords_target, mask, window_radius=distance_window_radius)
+                    local_pairwise_distance_loss(
+                        pred_coords,
+                        coords_target,
+                        mask,
+                        window_radius=distance_window_radius,
+                        focus_mask=true_mobile,
+                    )
                     if lambda_distance > 0
                     else torch.zeros((), device=device)
                 )
-                loss = delta_loss + lambda_distance * distance_loss
+                loss = delta_loss
+                loss = loss + motion_loss_weight * motion_loss
+                loss = loss + direction_loss_weight * direction_loss
+                loss = loss + mobile_loss_weight * mobile_loss
+                loss = loss + lambda_distance * distance_loss
                 val_totals["loss"] += float(loss.detach().cpu()) * coords_source.shape[0]
                 val_totals["delta"] += float(delta_loss.detach().cpu()) * coords_source.shape[0]
+                val_totals["motion"] += float(motion_loss.detach().cpu()) * coords_source.shape[0]
+                val_totals["direction"] += float(direction_loss.detach().cpu()) * coords_source.shape[0]
+                val_totals["mobile"] += float(mobile_loss.detach().cpu()) * coords_source.shape[0]
                 val_totals["distance"] += float(distance_loss.detach().cpu()) * coords_source.shape[0]
                 val_totals["samples"] += int(coords_source.shape[0])
 
@@ -437,11 +539,17 @@ def train_egnn_experiment(
         train_metrics = {
             "total_loss": train_totals["loss"] / train_count,
             "delta_loss": train_totals["delta"] / train_count,
+            "motion_loss": train_totals["motion"] / train_count,
+            "direction_loss": train_totals["direction"] / train_count,
+            "mobile_loss": train_totals["mobile"] / train_count,
             "distance_loss": train_totals["distance"] / train_count,
         }
         val_metrics = {
             "total_loss": val_totals["loss"] / val_count,
             "delta_loss": val_totals["delta"] / val_count,
+            "motion_loss": val_totals["motion"] / val_count,
+            "direction_loss": val_totals["direction"] / val_count,
+            "mobile_loss": val_totals["mobile"] / val_count,
             "distance_loss": val_totals["distance"] / val_count,
         }
         history.append(
@@ -449,9 +557,15 @@ def train_egnn_experiment(
                 "epoch": epoch,
                 "train_total_loss": train_metrics["total_loss"],
                 "train_delta_loss": train_metrics["delta_loss"],
+                "train_motion_loss": train_metrics["motion_loss"],
+                "train_direction_loss": train_metrics["direction_loss"],
+                "train_mobile_loss": train_metrics["mobile_loss"],
                 "train_distance_loss": train_metrics["distance_loss"],
                 "val_total_loss": val_metrics["total_loss"],
                 "val_delta_loss": val_metrics["delta_loss"],
+                "val_motion_loss": val_metrics["motion_loss"],
+                "val_direction_loss": val_metrics["direction_loss"],
+                "val_mobile_loss": val_metrics["mobile_loss"],
                 "val_distance_loss": val_metrics["distance_loss"],
             }
         )
@@ -499,4 +613,6 @@ def summarize_prediction_frame(frame: pd.DataFrame) -> dict[str, float]:
         "success_rate": float(frame["success"].mean()),
         "mean_true_motion": float(frame["mean_true_motion"].mean()),
         "mean_pred_motion": float(frame["mean_pred_motion"].mean()),
+        "mean_pred_mobile_prob": float(frame["mean_pred_mobile_prob"].mean()) if "mean_pred_mobile_prob" in frame else float("nan"),
+        "mean_gate": float(frame["mean_gate"].mean()) if "mean_gate" in frame else float("nan"),
     }

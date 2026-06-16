@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import math
-import json
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -13,8 +14,15 @@ import numpy as np
 import pandas as pd
 import torch
 
-from kinase_data.esm import EmbeddingCache
-from kinase_data.translation import InactiveActiveTranslationDataset
+try:
+    from kinase_data.esm import EmbeddingCache
+    from kinase_data.translation import InactiveActiveTranslationDataset
+except ModuleNotFoundError:  # pragma: no cover - notebook/script convenience
+    PROJECT_ROOT = Path(__file__).resolve().parents[2]
+    if str(PROJECT_ROOT) not in sys.path:
+        sys.path.insert(0, str(PROJECT_ROOT))
+    from kinase_data.esm import EmbeddingCache
+    from kinase_data.translation import InactiveActiveTranslationDataset
 
 LOGGER = logging.getLogger(__name__)
 
